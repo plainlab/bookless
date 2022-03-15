@@ -48,6 +48,7 @@ export const sendPlatform = (win: BrowserWindow) => {
 export type Command =
   | 'printFile'
   | 'openDir'
+  | 'newFile'
   | 'find'
   | 'findNext'
   | 'findPrevious'

@@ -20,8 +20,7 @@ export type Action =
     }
   | {
       type: 'updateConfig';
-      key: string;
-      value: JSON;
+      config: Meta;
     }
   | {
       type: 'toggleConfig';

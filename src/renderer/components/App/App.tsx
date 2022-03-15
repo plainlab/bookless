@@ -1,5 +1,5 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import { AppState } from 'renderer/state/AppState';
+import { initialState } from 'renderer/state/AppState';
 import saveToDiskMiddleware from 'renderer/state/middleware';
 import appStateReducer from 'renderer/state/reducer';
 import useReducerWithMiddleware from 'renderer/state/reducerWithMiddleware';
@@ -9,27 +9,6 @@ import Editor from '../Editor/Editor';
 import Explorer from '../Explorer/Explorer';
 import Sidebar from '../Sidebar/Sidebar';
 import './App.css';
-
-const initialState: AppState = {
-  dir: '',
-  files: [],
-  doc: {
-    md: '',
-    yaml: '',
-    bodyMd: '',
-    meta: {},
-    html: '',
-    fileName: 'Untitled',
-    filePath: undefined,
-  },
-  configOpen: false,
-  config: {
-    bookFilename: '',
-    mdFiles: [],
-  },
-  paginated: false,
-  explorer: true,
-};
 
 declare global {
   interface Window {

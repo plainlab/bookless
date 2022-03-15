@@ -1,5 +1,5 @@
 import { Action } from './Action';
-import { AppState } from './AppState';
+import { AppState, ConfigKey } from './AppState';
 
 export default function saveToDiskMiddleware(
   action: Action | undefined,
@@ -11,11 +11,15 @@ export default function saveToDiskMiddleware(
 
   switch (action.type) {
     case 'updateMd': {
-      window.ipcAPI?.saveFile(state.doc);
+      if (state.doc.filePath?.startsWith(state.dir)) {
+        window.ipcAPI?.saveFile(state.doc);
+      }
       break;
     }
     case 'updateConfig': {
-      window.ipcAPI?.saveConfig(state.dir, state.config);
+      if (state.dir === action.config[ConfigKey.currentDir]) {
+        window.ipcAPI?.saveConfig(state.dir, state.config);
+      }
       break;
     }
     default:

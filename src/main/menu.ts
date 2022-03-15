@@ -98,6 +98,11 @@ export default class MenuBuilder {
           accelerator: 'CmdOrCtrl+O',
           click: () => this.windowSendCommand('openDir'),
         },
+        {
+          label: '&New',
+          accelerator: 'CmdOrCtrl+N',
+          click: () => this.windowSendCommand('newFile'),
+        },
       ],
     };
 

@@ -25,10 +25,9 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
       return { ...state, config };
     }
     case 'updateConfig': {
-      const { key, value } = action;
-      const config = { ...state.config };
-      config[key] = value;
-      return { ...state, config };
+      const { config } = action;
+      const conf = { ...state.config, ...config };
+      return { ...state, config: conf };
     }
     case 'updateMd': {
       const { md } = action;

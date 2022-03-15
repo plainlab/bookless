@@ -135,8 +135,10 @@ const ConfigEditor = (props: AppStateProps) => {
       const v = typeof e === 'string' ? e : e.target.value;
       dispatch({
         type: 'updateConfig',
-        key,
-        value: onDone ? onDone(v) : v,
+        config: {
+          [ConfigKey.currentDir]: state.dir,
+          [key]: onDone ? onDone(v) : v,
+        },
       });
     };
     const common = {
@@ -181,7 +183,7 @@ const ConfigEditor = (props: AppStateProps) => {
     <div className="flex flex-1 text-xs">
       <IoChevronBackOutline
         onClick={() => dispatch({ type: 'toggleConfig' })}
-        className="w-5 h-5 m-4 cursor-pointer hover:opacity-70"
+        className="w-5 h-5 m-4 cursor-pointer hover:opacity-100 opacity-70"
       />
       <div className="flex-1 px-4 py-20 space-y-4 overflow-x-hidden overflow-y-auto">
         {metaKvs.map(renderKv)}

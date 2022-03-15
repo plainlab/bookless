@@ -25,6 +25,7 @@ export interface DocFile {
 }
 
 export const ConfigKey = {
+  currentDir: 'currentDir',
   // Render
   bookFilename: 'bookFilename',
   mdFiles: 'mdFiles',
@@ -49,3 +50,24 @@ export type JSON =
   | null
   | Meta[]
   | { [key: string]: JSON };
+
+export const initialState: AppState = {
+  dir: '',
+  files: [],
+  doc: {
+    md: 'Choose a **folder** to get started by clicking the open icon on the top left!',
+    yaml: '',
+    bodyMd: '',
+    meta: {},
+    html: '',
+    fileName: 'Untitled',
+    filePath: undefined,
+  },
+  configOpen: false,
+  config: {
+    bookFilename: '',
+    mdFiles: [],
+  },
+  paginated: false,
+  explorer: true,
+};
