@@ -1,7 +1,8 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { AppState } from 'renderer/state/AppState';
+import saveToDiskMiddleware from 'renderer/state/middleware';
 import appStateReducer from 'renderer/state/reducer';
-import useThunkReducer from 'renderer/state/thunkReducer';
+import useReducerWithMiddleware from 'renderer/state/reducerWithMiddleware';
 import { IpcAPI } from '../../../main/preload';
 import ConfigEditor from '../Config/Config';
 import Editor from '../Editor/Editor';
@@ -37,7 +38,12 @@ declare global {
 }
 
 const Main = () => {
-  const [state, dispatch] = useThunkReducer(appStateReducer, initialState);
+  const [state, dispatch] = useReducerWithMiddleware(
+    appStateReducer,
+    initialState,
+    [],
+    [saveToDiskMiddleware]
+  );
 
   return (
     <div className="absolute inset-0 flex overflow-hidden text-sm text-gray-700">
