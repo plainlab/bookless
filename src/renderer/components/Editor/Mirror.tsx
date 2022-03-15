@@ -79,7 +79,7 @@ const Mirror = (props: AppStateProps) => {
 
   return (
     <CodeMirror
-      onBeforeChange={(_ed, _diff, md) => dispatch({ type: 'setMd', md })}
+      onBeforeChange={(_ed, _diff, md) => dispatch({ type: 'updateMd', md })}
       editorDidMount={onEditorDidMount}
       value={state.doc.md}
       autoCursor

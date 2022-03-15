@@ -1,7 +1,7 @@
-import { useReducer } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { AppState } from 'renderer/state/AppState';
 import appStateReducer from 'renderer/state/reducer';
+import useThunkReducer from 'renderer/state/thunkReducer';
 import { IpcAPI } from '../../../main/preload';
 import ConfigEditor from '../Config/Config';
 import Editor from '../Editor/Editor';
@@ -37,7 +37,7 @@ declare global {
 }
 
 const Main = () => {
-  const [state, dispatch] = useReducer(appStateReducer, initialState);
+  const [state, dispatch] = useThunkReducer(appStateReducer, initialState);
 
   return (
     <div className="absolute inset-0 flex overflow-hidden text-sm text-gray-700">

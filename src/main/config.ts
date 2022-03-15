@@ -19,7 +19,7 @@ export const loadConfig = async (dir: string): Promise<Meta> => {
   return conf;
 };
 
-export const dumpConfig = async (dir: string, conf: Meta) => {
+export const saveConfig = async (dir: string, conf: Meta) => {
   if (!dir) {
     return;
   }

@@ -61,8 +61,8 @@ const newFile = async (dir: string): Promise<string> =>
 const loadConfig = async (dir: string): Promise<Meta> =>
   ipcRenderer.invoke('loadConfig', dir);
 
-const dumpConfig = async (dir: string, conf: Meta) =>
-  ipcRenderer.invoke('dumpConfig', dir, conf);
+const saveConfig = async (dir: string, conf: Meta) =>
+  ipcRenderer.invoke('saveConfig', dir, conf);
 
 const ipcAPI = {
   openDir,
@@ -72,7 +72,7 @@ const ipcAPI = {
   deleteFile,
   saveFile,
   loadConfig,
-  dumpConfig,
+  saveConfig,
   renameFile,
   setStateAndDispatch: (s: AppState, d: Disp) => {
     state = s;

@@ -10,7 +10,7 @@ import {
   renameFile,
 } from './file';
 import { Message } from './preload';
-import { dumpConfig, loadConfig } from './config';
+import { saveConfig, loadConfig } from './config';
 
 export const init = () => {
   ipcMain.handle('openDir', openDir);
@@ -29,8 +29,8 @@ export const init = () => {
     deleteFile(dir, filename)
   );
   ipcMain.handle('loadConfig', (_event, dir: string) => loadConfig(dir));
-  ipcMain.handle('dumpConfig', (_event, dir: string, conf: Meta) =>
-    dumpConfig(dir, conf)
+  ipcMain.handle('saveConfig', (_event, dir: string, conf: Meta) =>
+    saveConfig(dir, conf)
   );
   ipcMain.on('openLink', (_event, link: string) => {
     shell.openExternal(link);
