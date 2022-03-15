@@ -11,7 +11,7 @@ export type Action =
       doc: Pick<Doc, 'md' | 'fileName' | 'filePath'>;
     }
   | {
-      type: 'setMd';
+      type: 'updateMd';
       md: string;
     }
   | {

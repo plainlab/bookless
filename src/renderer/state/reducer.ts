@@ -2,10 +2,11 @@ import { truncate } from 'helpers/string';
 import { AppState } from './AppState';
 import { Action } from './Action';
 import parseYaml from '../export/convertYaml';
+import { ThunkDispatch } from './thunkReducer';
 
 export interface AppStateProps {
   state: AppState;
-  dispatch: React.Dispatch<Action>;
+  dispatch: ThunkDispatch<AppState, Action>;
 }
 
 const appStateReducer = (state: AppState, action: Action): AppState => {
@@ -28,12 +29,12 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
       const config = { ...state.config };
       config[key] = value;
 
-      // FIXME: Should we put save here?
-      window.ipcAPI?.dumpConfig(state.dir, config);
+      // FIXME: Move this to another place
+      window.ipcAPI?.saveConfig(state.dir, config);
 
       return { ...state, config };
     }
-    case 'setMd': {
+    case 'updateMd': {
       const { md } = action;
       const doc = {
         ...state.doc,
@@ -41,7 +42,7 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
         md,
       };
 
-      // FIXME: Should we put save here?
+      // FIXME: Move this to another place
       window.ipcAPI?.saveFile(doc);
 
       const files = state.files.map((file) => {
@@ -50,7 +51,6 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
         }
         return file;
       });
-
       return { ...state, doc, files };
     }
     case 'toggleConfig': {
