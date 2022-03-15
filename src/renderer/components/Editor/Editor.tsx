@@ -67,7 +67,7 @@ const Editor = (props: AppStateProps) => {
           <IoShareOutline className="w-5 h-5 cursor-pointer hover:opacity-70" />
         </section>
       </nav>
-      <section className="flex-1 overflow-scroll">
+      <section className="flex-1 overflow-auto">
         <Mirror state={state} dispatch={dispatch} />
       </section>
     </div>

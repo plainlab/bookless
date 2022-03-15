@@ -183,7 +183,7 @@ const ConfigEditor = (props: AppStateProps) => {
         onClick={() => dispatch({ type: 'toggleConfig' })}
         className="w-5 h-5 m-4 cursor-pointer hover:opacity-70"
       />
-      <div className="flex-1 px-4 py-20 space-y-4 overflow-auto">
+      <div className="flex-1 px-4 py-20 space-y-4 overflow-x-hidden overflow-y-auto">
         {metaKvs.map(renderKv)}
         {layoutKvs.map(renderKv)}
       </div>

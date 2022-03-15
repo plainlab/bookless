@@ -139,7 +139,7 @@ const Explorer = (props: AppStateProps) => {
         'w-0': !state.explorer,
       })}
     >
-      <nav className="flex items-center justify-between p-4 overflow-hidden text-gray-500">
+      <nav className="flex items-center justify-between p-4 text-gray-500">
         <section className="flex items-center justify-center space-x-4">
           <IoFolderOpenOutline
             title="Open book folder"
@@ -167,7 +167,7 @@ const Explorer = (props: AppStateProps) => {
               {...provided.droppableProps}
               ref={provided.innerRef}
               className={classNames({
-                'flex-1 p-2 space-y-2 overflow-scroll': true,
+                'flex-1 p-2 space-y-2 overflow-y-auto overflow-x-hidden': true,
                 'opacity-50': snapshot.isDraggingOver,
               })}
             >
@@ -202,7 +202,7 @@ const Explorer = (props: AppStateProps) => {
                               true,
                             'text-white bg-blue-500':
                               file.name === state.doc.fileName,
-                            'hover:bg-blue-100':
+                            'hover:bg-gray-200':
                               file.name !== state.doc.fileName,
                           })}
                         >
