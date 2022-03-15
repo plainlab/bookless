@@ -1,4 +1,4 @@
-import { Doc, DocFile, JSON, Meta } from './AppState';
+import { Doc, DocFile, Meta } from './AppState';
 
 export type Action =
   | {

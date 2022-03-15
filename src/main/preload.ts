@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { AppState, Doc, DocFile, Meta } from 'renderer/state/AppState';
+import { Doc, DocFile, Meta } from 'renderer/state/AppState';
 
 export type IpcAPI = typeof ipcAPI;
 
