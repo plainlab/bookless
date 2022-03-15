@@ -1,12 +1,12 @@
 import { truncate } from 'helpers/string';
+import { Dispatch } from 'react';
 import { AppState } from './AppState';
 import { Action } from './Action';
 import parseYaml from '../export/convertYaml';
-import { ThunkDispatch } from './thunkReducer';
 
 export interface AppStateProps {
   state: AppState;
-  dispatch: ThunkDispatch<AppState, Action>;
+  dispatch: Dispatch<Action>;
 }
 
 const appStateReducer = (state: AppState, action: Action): AppState => {
@@ -25,14 +25,9 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
       return { ...state, config };
     }
     case 'updateConfig': {
-      const { key, value } = action;
-      const config = { ...state.config };
-      config[key] = value;
-
-      // FIXME: Move this to another place
-      window.ipcAPI?.saveConfig(state.dir, config);
-
-      return { ...state, config };
+      const { config } = action;
+      const conf = { ...state.config, ...config };
+      return { ...state, config: conf };
     }
     case 'updateMd': {
       const { md } = action;
@@ -41,10 +36,6 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
         ...parseYaml(md),
         md,
       };
-
-      // FIXME: Move this to another place
-      window.ipcAPI?.saveFile(doc);
-
       const files = state.files.map((file) => {
         if (file.name === doc.fileName) {
           return { ...file, body: truncate(doc.md) };

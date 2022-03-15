@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { useEffect } from 'react';
 import {
   IoAddOutline,
   IoBookmarkOutline,
@@ -32,11 +33,17 @@ const Editor = (props: AppStateProps) => {
       dispatch({ type: 'initFiles', dir: state.dir, files });
       dispatch({
         type: 'updateConfig',
-        key: ConfigKey.mdFiles,
-        value: mdFiles,
+        config: {
+          [ConfigKey.currentDir]: state.dir,
+          [ConfigKey.mdFiles]: mdFiles,
+        },
       });
     }
   };
+
+  useEffect(() => {
+    window.ipcAPI?.on.newFile(newFile);
+  });
 
   return (
     <div className="relative flex flex-col flex-1 bg-white">
@@ -50,21 +57,31 @@ const Editor = (props: AppStateProps) => {
         <section className="flex items-center justify-center space-x-4">
           <IoBookmarkOutline
             title="Toggle chapters"
-            onClick={() => dispatch({ type: 'toggleExplorer' })}
-            className="w-5 h-5 cursor-pointer hover:opacity-70"
+            onClick={() => state.dir && dispatch({ type: 'toggleExplorer' })}
+            className={classNames({
+              'w-5 h-5 opacity-70': true,
+              'cursor-pointer hover:opacity-100': state.dir,
+              'cursor-not-allowed opacity-10': !state.dir,
+            })}
           />
           <IoAddOutline
             title="New chapter"
             onClick={newFile}
             className={classNames({
-              'w-5 h-5': true,
-              'cursor-pointer hover:opacity-70': state.dir,
-              'cursor-not-allowed opacity-30': !state.dir,
+              'w-5 h-5 opacity-70': true,
+              'cursor-pointer hover:opacity-100': state.dir,
+              'cursor-not-allowed opacity-10': !state.dir,
             })}
           />
         </section>
         <section className="z-0 flex items-center justify-center space-x-4">
-          <IoShareOutline className="w-5 h-5 cursor-pointer hover:opacity-70" />
+          <IoShareOutline
+            className={classNames({
+              'w-5 h-5 opacity-70': true,
+              'cursor-pointer hover:opacity-100': state.doc.filePath,
+              'cursor-not-allowed opacity-10': !state.doc.filePath,
+            })}
+          />
         </section>
       </nav>
       <section className="flex-1 overflow-auto">

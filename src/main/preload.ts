@@ -1,18 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { AppState, Doc, DocFile, Meta } from 'renderer/state/AppState';
-import { Action } from 'renderer/state/Action';
+import { Doc, DocFile, Meta } from 'renderer/state/AppState';
 
 export type IpcAPI = typeof ipcAPI;
-type Disp = (a: Action) => void;
-
-let state: AppState | undefined;
-let dispatch: Disp | undefined;
-
-ipcRenderer.on('getDoc', (_e, replyChannel: string) => {
-  if (state) {
-    ipcRenderer.send(replyChannel, state.doc);
-  }
-});
 
 export type Message =
   | {
@@ -23,12 +12,6 @@ export type Message =
       type: 'initConfig';
       config: Meta;
     };
-
-ipcRenderer.on('dispatch', (_e, action: Message) => {
-  if (dispatch) {
-    dispatch(action);
-  }
-});
 
 const chooseFormat = async (fmt: string): Promise<boolean> =>
   ipcRenderer.invoke('chooseFormat', fmt);
@@ -74,10 +57,6 @@ const ipcAPI = {
   loadConfig,
   saveConfig,
   renameFile,
-  setStateAndDispatch: (s: AppState, d: Disp) => {
-    state = s;
-    dispatch = d;
-  },
   send: {
     openLink: (lnk: string) => {
       if (typeof lnk === 'string') ipcRenderer.send('openLink', lnk);
@@ -93,6 +72,7 @@ const ipcAPI = {
     findPrevious: (cb: () => void) => ipcRenderer.on('findPrevious', cb),
     printFile: (cb: () => void) => ipcRenderer.on('printFile', cb),
     openDir: (cb: () => void) => ipcRenderer.on('openDir', cb),
+    newFile: (cb: () => void) => ipcRenderer.on('newFile', cb),
     sendPlatform: (cb: (p: string) => void) =>
       ipcRenderer.once('sendPlatform', (_e, p) => cb(p)),
   },

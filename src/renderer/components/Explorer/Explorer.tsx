@@ -19,11 +19,18 @@ import {
 } from 'react-beautiful-dnd';
 
 import { AppStateProps } from 'renderer/state/reducer';
-import { ConfigKey, DocFile } from 'renderer/state/AppState';
+import { ConfigKey, DocFile, initialState } from 'renderer/state/AppState';
 import { useEffect } from 'react';
 
 const Explorer = (props: AppStateProps) => {
   const { state, dispatch } = props;
+
+  const chooseFile = async (dir: string, filename: string) => {
+    const doc = await window.ipcAPI?.loadFile(dir, filename);
+    if (doc) {
+      dispatch({ type: 'initDoc', doc });
+    }
+  };
 
   const chooseDir = async () => {
     // eslint-disable-next-line prefer-const
@@ -37,13 +44,11 @@ const Explorer = (props: AppStateProps) => {
       bookFilename = bookFilename || 'my-book';
       dispatch({
         type: 'updateConfig',
-        key: ConfigKey.mdFiles,
-        value: mdFiles,
-      });
-      dispatch({
-        type: 'updateConfig',
-        key: ConfigKey.bookFilename,
-        value: bookFilename,
+        config: {
+          [ConfigKey.currentDir]: dir,
+          [ConfigKey.mdFiles]: mdFiles,
+          [ConfigKey.bookFilename]: bookFilename,
+        },
       });
 
       // Load chapters
@@ -53,19 +58,24 @@ const Explorer = (props: AppStateProps) => {
       });
       const docFiles = (await window.ipcAPI?.loadFiles(dir, mdFiles)) || [];
       dispatch({ type: 'initFiles', dir, files: docFiles });
+
+      if (mdFiles.length) {
+        chooseFile(dir, mdFiles[0]);
+      } else {
+        dispatch({
+          type: 'initDoc',
+          doc: {
+            ...initialState.doc,
+            md: 'You do not any files in the folder yet. **Create** a new one using the + button!',
+          },
+        });
+      }
     }
   };
 
-  const chooseFile = async (filename: string) => {
-    const doc = await window.ipcAPI?.loadFile(state.dir, filename);
-    if (doc) {
-      dispatch({ type: 'initDoc', doc });
-    }
-  };
-
-  const renameFile = async (filename: string) => {
-    const newFilename = await window.ipcAPI?.renameFile(state.dir, filename);
-    if (!newFilename || !state.dir) {
+  const renameFile = async (dir: string, filename: string) => {
+    const newFilename = await window.ipcAPI?.renameFile(dir, filename);
+    if (!newFilename || !dir) {
       return;
     }
 
@@ -74,17 +84,19 @@ const Explorer = (props: AppStateProps) => {
     const currentIndex = mdFiles.indexOf(filename);
     mdFiles.splice(currentIndex, 1, newFilename);
 
-    const files = (await window.ipcAPI?.loadFiles(state.dir, mdFiles)) || [];
-    dispatch({ type: 'initFiles', dir: state.dir, files });
+    const files = (await window.ipcAPI?.loadFiles(dir, mdFiles)) || [];
+    dispatch({ type: 'initFiles', dir, files });
     dispatch({
       type: 'updateConfig',
-      key: ConfigKey.mdFiles,
-      value: mdFiles,
+      config: {
+        [ConfigKey.currentDir]: dir,
+        [ConfigKey.mdFiles]: mdFiles,
+      },
     });
   };
 
-  const deleteFile = async (filename: string) => {
-    const deleted = await window.ipcAPI?.deleteFile(state.dir, filename);
+  const deleteFile = async (dir: string, filename: string) => {
+    const deleted = await window.ipcAPI?.deleteFile(dir, filename);
     if (!deleted) {
       return;
     }
@@ -94,9 +106,15 @@ const Explorer = (props: AppStateProps) => {
     const currentIndex = mdFiles.indexOf(filename);
     mdFiles.splice(currentIndex, 1);
 
-    const files = (await window.ipcAPI?.loadFiles(state.dir, mdFiles)) || [];
-    dispatch({ type: 'initFiles', dir: state.dir, files });
-    dispatch({ type: 'updateConfig', key: ConfigKey.mdFiles, value: mdFiles });
+    const files = (await window.ipcAPI?.loadFiles(dir, mdFiles)) || [];
+    dispatch({ type: 'initFiles', dir, files });
+    dispatch({
+      type: 'updateConfig',
+      config: {
+        [ConfigKey.currentDir]: dir,
+        [ConfigKey.mdFiles]: mdFiles,
+      },
+    });
   };
 
   const reorderFiles = (
@@ -122,8 +140,10 @@ const Explorer = (props: AppStateProps) => {
       dispatch({ type: 'initFiles', dir: state.dir, files });
       dispatch({
         type: 'updateConfig',
-        key: ConfigKey.mdFiles,
-        value: mdFiles,
+        config: {
+          [ConfigKey.currentDir]: state.dir,
+          [ConfigKey.mdFiles]: mdFiles,
+        },
       });
     }
   };
@@ -144,20 +164,29 @@ const Explorer = (props: AppStateProps) => {
           <IoFolderOpenOutline
             title="Open book folder"
             onClick={chooseDir}
-            className="w-5 h-5 cursor-pointer hover:opacity-70"
+            className="w-5 h-5 cursor-pointer hover:opacity-100 opacity-70"
           />
           <IoSettingsOutline
             title="Book config"
             className={classNames({
-              'w-5 h-5': true,
-              'cursor-pointer hover:opacity-70': state.dir,
-              'cursor-not-allowed opacity-30': !state.dir,
+              'w-5 h-5 opacity-70': true,
+              'cursor-pointer hover:opacity-100': state.dir,
+              'cursor-not-allowed opacity-10': !state.dir,
             })}
-            onClick={() => dispatch({ type: 'toggleConfig' })}
+            onClick={() => state.dir && dispatch({ type: 'toggleConfig' })}
           />
         </section>
         <section>
-          <IoShareOutline className="w-5 h-5 cursor-pointer hover:opacity-70" />
+          <IoShareOutline
+            className={classNames({
+              'w-5 h-5 opacity-70': true,
+              'cursor-pointer hover:opacity-100':
+                state.files && state.files.length,
+              'cursor-not-allowed opacity-10': !(
+                state.files && state.files.length
+              ),
+            })}
+          />
         </section>
       </nav>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -194,9 +223,9 @@ const Explorer = (props: AppStateProps) => {
                           key={file.name}
                           role="button"
                           tabIndex={0}
-                          onClick={() => chooseFile(file.name)}
-                          onDoubleClick={() => renameFile(file.name)}
-                          onKeyPress={() => chooseFile(file.name)}
+                          onClick={() => chooseFile(state.dir, file.name)}
+                          onDoubleClick={() => renameFile(state.dir, file.name)}
+                          onKeyPress={() => chooseFile(state.dir, file.name)}
                           className={classNames({
                             'h-28 w-60 p-4 flex flex-col justify-between transition-all items-stretch rounded text-xs cursor-pointer':
                               true,
@@ -216,7 +245,7 @@ const Explorer = (props: AppStateProps) => {
                               title="Delete"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                deleteFile(file.name);
+                                deleteFile(state.dir, file.name);
                               }}
                             />
                             <IoCreateOutline
@@ -224,7 +253,7 @@ const Explorer = (props: AppStateProps) => {
                               title="Rename"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                renameFile(file.name);
+                                renameFile(state.dir, file.name);
                               }}
                             />
                           </span>

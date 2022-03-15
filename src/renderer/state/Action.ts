@@ -1,4 +1,4 @@
-import { Doc, DocFile, JSON, Meta } from './AppState';
+import { Doc, DocFile, Meta } from './AppState';
 
 export type Action =
   | {
@@ -20,8 +20,7 @@ export type Action =
     }
   | {
       type: 'updateConfig';
-      key: string;
-      value: JSON;
+      config: Meta;
     }
   | {
       type: 'toggleConfig';
