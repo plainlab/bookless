@@ -46,6 +46,7 @@ div.CodeMirror {
   padding: 40px;
   max-width: 40em;
   margin: 0 auto;
+  padding-bottom: 300px;
 }
 
 .CodeMirror-sizer {

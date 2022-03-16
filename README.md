@@ -8,6 +8,7 @@
 ## Features
 
 - [x] Local markdown files edit
+- [x] Focus mode
 - [x] Drag & drop to organize chapters
 - [ ] Spelling check
 - [ ] Book & chapter preview
