@@ -69,7 +69,7 @@ export const newFile = async (dir: string): Promise<string> => {
   }
 
   try {
-    await writeFile(filePath, `Write ${filename} content here...`);
+    await writeFile(filePath, `# ${filename}`);
     return filename;
   } catch (err) {
     dialog.showMessageBox({
