@@ -174,39 +174,43 @@ const Explorer = (props: AppStateProps) => {
   return (
     <div
       className={classNames({
-        'flex flex-col w-64 bg-gray-100 transition-all duration-300': true,
+        'flex flex-col w-64 transition-all duration-300 overflow-x-hidden overflow-y-auto bg-local bg-gradient-to-t from-white to-gray-100':
+          true,
         'w-0': !state.explorer,
       })}
     >
-      <nav className="flex items-center justify-between p-4 text-gray-500">
-        <section className="flex items-center justify-center space-x-4">
-          <IoFolderOpenOutline
-            title="Open book folder"
-            onClick={chooseDir}
-            className="w-5 h-5 cursor-pointer hover:opacity-100 opacity-70"
-          />
-          <IoSettingsOutline
-            title="Book config"
-            className={classNames({
-              'w-5 h-5 opacity-70': true,
-              'cursor-pointer hover:opacity-100': state.dir,
-              'cursor-not-allowed opacity-10': !state.dir,
-            })}
-            onClick={() => state.dir && dispatch({ type: 'toggleConfig' })}
-          />
+      <nav className="sticky top-0 z-10 flex flex-col text-gray-500">
+        <section className="flex items-center justify-between flex-1 px-4 pt-4 bg-gray-100">
+          <section className="flex items-center justify-center space-x-4">
+            <IoFolderOpenOutline
+              title="Open book folder"
+              onClick={chooseDir}
+              className="w-5 h-5 cursor-pointer hover:opacity-100 opacity-70"
+            />
+            <IoSettingsOutline
+              title="Book config"
+              className={classNames({
+                'w-5 h-5 opacity-70': true,
+                'cursor-pointer hover:opacity-100': state.dir,
+                'cursor-not-allowed opacity-10': !state.dir,
+              })}
+              onClick={() => state.dir && dispatch({ type: 'toggleConfig' })}
+            />
+          </section>
+          <section>
+            <IoShareOutline
+              className={classNames({
+                'w-5 h-5 opacity-70': true,
+                'cursor-pointer hover:opacity-100':
+                  state.files && state.files.length,
+                'cursor-not-allowed opacity-10': !(
+                  state.files && state.files.length
+                ),
+              })}
+            />
+          </section>
         </section>
-        <section>
-          <IoShareOutline
-            className={classNames({
-              'w-5 h-5 opacity-70': true,
-              'cursor-pointer hover:opacity-100':
-                state.files && state.files.length,
-              'cursor-not-allowed opacity-10': !(
-                state.files && state.files.length
-              ),
-            })}
-          />
-        </section>
+        <section className="h-8 bg-gradient-to-b from-gray-100 to-transparent" />
       </nav>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="explorer">
@@ -215,7 +219,7 @@ const Explorer = (props: AppStateProps) => {
               {...provided.droppableProps}
               ref={provided.innerRef}
               className={classNames({
-                'flex-1 p-2 space-y-2 overflow-y-auto overflow-x-hidden': true,
+                'flex-1 p-2 space-y-2 relative': true,
                 'opacity-50': snapshot.isDraggingOver,
               })}
             >
@@ -235,7 +239,8 @@ const Explorer = (props: AppStateProps) => {
                         {...provided_.draggableProps}
                         {...provided_.dragHandleProps}
                         className={classNames({
-                          'bg-blue-300 rounded': snapshot_.isDragging,
+                          'border rounded': true,
+                          'bg-blue-300 border-none': snapshot_.isDragging,
                         })}
                       >
                         <div
@@ -246,7 +251,7 @@ const Explorer = (props: AppStateProps) => {
                           onDoubleClick={() => renameFile(state.dir, file.name)}
                           onKeyPress={() => chooseFile(state.dir, file.name)}
                           className={classNames({
-                            'h-28 w-60 p-4 flex flex-col justify-between transition-all items-stretch rounded text-xs cursor-pointer':
+                            'h-28 w-60 p-4 flex flex-col justify-between duration-300 transition-all items-stretch rounded text-xs cursor-pointer':
                               true,
                             'text-white bg-blue-500':
                               file.name === state.doc.fileName,
@@ -260,7 +265,7 @@ const Explorer = (props: AppStateProps) => {
                           </section>
                           <span className="flex items-center justify-start mt-2 space-x-2 transition-opacity duration-300 opacity-0 hover:opacity-100">
                             <IoTrashOutline
-                              className="w-4 h-4 transition-opacity hover:opacity-70"
+                              className="w-4 h-4 transition-opacity duration-300 hover:opacity-70"
                               title="Delete"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -268,7 +273,7 @@ const Explorer = (props: AppStateProps) => {
                               }}
                             />
                             <IoCreateOutline
-                              className="w-4 h-4 transition-opacity hover:opacity-70"
+                              className="w-4 h-4 transition-opacity duration-300 hover:opacity-70"
                               title="Rename"
                               onClick={(e) => {
                                 e.stopPropagation();

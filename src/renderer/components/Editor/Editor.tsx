@@ -46,45 +46,49 @@ const Editor = (props: AppStateProps) => {
   });
 
   return (
-    <div className="relative flex flex-col flex-1 bg-white">
+    <div className="relative flex flex-col flex-1 overflow-auto">
       <nav
         className={classNames({
-          'absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4 text-gray-500':
+          'sticky top-0 z-10 flex flex-col duration-300 transition-opacity text-gray-500':
             true,
           'opacity-0 hover:opacity-100': !state.explorer,
         })}
+        onDoubleClick={() => state.dir && dispatch({ type: 'toggleExplorer' })}
       >
-        <section className="flex items-center justify-center space-x-4">
-          <IoBookmarkOutline
-            title="Toggle chapters"
-            onClick={() => state.dir && dispatch({ type: 'toggleExplorer' })}
-            className={classNames({
-              'w-5 h-5 opacity-70': true,
-              'cursor-pointer hover:opacity-100': state.dir,
-              'cursor-not-allowed opacity-10': !state.dir,
-            })}
-          />
-          <IoAddOutline
-            title="New chapter"
-            onClick={newFile}
-            className={classNames({
-              'w-5 h-5 opacity-70': true,
-              'cursor-pointer hover:opacity-100': state.dir,
-              'cursor-not-allowed opacity-10': !state.dir,
-            })}
-          />
+        <section className="flex items-center justify-between flex-1 px-4 pt-4 bg-white">
+          <section className="flex items-center justify-center space-x-4">
+            <IoBookmarkOutline
+              title="Toggle chapters"
+              onClick={() => state.dir && dispatch({ type: 'toggleExplorer' })}
+              className={classNames({
+                'w-5 h-5 opacity-70': true,
+                'cursor-pointer hover:opacity-100': state.dir,
+                'cursor-not-allowed opacity-10': !state.dir,
+              })}
+            />
+            <IoAddOutline
+              title="New chapter"
+              onClick={newFile}
+              className={classNames({
+                'w-5 h-5 opacity-70': true,
+                'cursor-pointer hover:opacity-100': state.dir,
+                'cursor-not-allowed opacity-10': !state.dir,
+              })}
+            />
+          </section>
+          <section className="z-0 flex items-center justify-center space-x-4">
+            <IoShareOutline
+              className={classNames({
+                'w-5 h-5 opacity-70': true,
+                'cursor-pointer hover:opacity-100': state.doc.filePath,
+                'cursor-not-allowed opacity-10': !state.doc.filePath,
+              })}
+            />
+          </section>
         </section>
-        <section className="z-0 flex items-center justify-center space-x-4">
-          <IoShareOutline
-            className={classNames({
-              'w-5 h-5 opacity-70': true,
-              'cursor-pointer hover:opacity-100': state.doc.filePath,
-              'cursor-not-allowed opacity-10': !state.doc.filePath,
-            })}
-          />
-        </section>
+        <section className="h-8 bg-gradient-to-b from-white to-transparent" />
       </nav>
-      <section className="flex-1 overflow-auto">
+      <section className="relative flex-1">
         <Mirror state={state} dispatch={dispatch} />
       </section>
     </div>
