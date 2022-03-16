@@ -65,7 +65,7 @@ export const initialState: AppState = {
   },
   configOpen: false,
   config: {
-    bookFilename: '',
+    bookFilename: 'Untitled',
     mdFiles: [],
   },
   paginated: false,

@@ -32,44 +32,49 @@ const Explorer = (props: AppStateProps) => {
     }
   };
 
+  const reloadDoc = (dir: string, mdFiles: string[]) => {
+    if (mdFiles.length) {
+      chooseFile(dir, mdFiles[0]);
+    } else {
+      dispatch({
+        type: 'initDoc',
+        doc: {
+          ...initialState.doc,
+          md: 'You do not any files in the folder yet. **Create** a new one using the + button!',
+        },
+      });
+    }
+  };
+
   const chooseDir = async () => {
     // eslint-disable-next-line prefer-const
     let { dir, filenames } = (await window.ipcAPI?.openDir()) || {};
     if (dir) {
-      const conf = (await window.ipcAPI?.loadConfig(dir)) || {};
-      let { mdFiles, bookFilename } = conf;
+      const config = (await window.ipcAPI?.loadConfig(dir)) || {};
+      let { mdFiles } = config;
 
-      // Set default values
+      // Load files
       mdFiles = (mdFiles as string[]) || filenames;
-      bookFilename = bookFilename || 'my-book';
-      dispatch({
-        type: 'updateConfig',
-        config: {
-          [ConfigKey.currentDir]: dir,
-          [ConfigKey.mdFiles]: mdFiles,
-          [ConfigKey.bookFilename]: bookFilename,
-        },
-      });
+      const docFiles = (await window.ipcAPI?.loadFiles(dir, mdFiles)) || [];
 
-      // Load chapters
+      // Init state
+      dispatch({ type: 'initFiles', dir, files: docFiles });
       dispatch({
         type: 'initConfig',
-        config: { ...conf, mdFiles, bookFilename },
+        config: { ...config, mdFiles, currentDir: dir },
       });
-      const docFiles = (await window.ipcAPI?.loadFiles(dir, mdFiles)) || [];
-      dispatch({ type: 'initFiles', dir, files: docFiles });
-
-      if (mdFiles.length) {
-        chooseFile(dir, mdFiles[0]);
-      } else {
+      if (config.mdFiles !== mdFiles) {
         dispatch({
-          type: 'initDoc',
-          doc: {
-            ...initialState.doc,
-            md: 'You do not any files in the folder yet. **Create** a new one using the + button!',
+          type: 'updateConfig',
+          config: {
+            [ConfigKey.currentDir]: dir,
+            [ConfigKey.mdFiles]: mdFiles,
           },
         });
       }
+
+      // Reload doc if needed
+      reloadDoc(dir, mdFiles);
     }
   };
 
@@ -79,12 +84,14 @@ const Explorer = (props: AppStateProps) => {
       return;
     }
 
+    // Load files
     let { mdFiles } = state.config;
     mdFiles = mdFiles as string[];
     const currentIndex = mdFiles.indexOf(filename);
     mdFiles.splice(currentIndex, 1, newFilename);
-
     const files = (await window.ipcAPI?.loadFiles(dir, mdFiles)) || [];
+
+    // Update state
     dispatch({ type: 'initFiles', dir, files });
     dispatch({
       type: 'updateConfig',
@@ -93,6 +100,11 @@ const Explorer = (props: AppStateProps) => {
         [ConfigKey.mdFiles]: mdFiles,
       },
     });
+
+    // Reload doc if needed
+    if (filename === state.doc.fileName) {
+      chooseFile(dir, newFilename);
+    }
   };
 
   const deleteFile = async (dir: string, filename: string) => {
@@ -101,12 +113,14 @@ const Explorer = (props: AppStateProps) => {
       return;
     }
 
+    // Update files
     let { mdFiles } = state.config;
     mdFiles = mdFiles as string[];
     const currentIndex = mdFiles.indexOf(filename);
     mdFiles.splice(currentIndex, 1);
-
     const files = (await window.ipcAPI?.loadFiles(dir, mdFiles)) || [];
+
+    // Set states
     dispatch({ type: 'initFiles', dir, files });
     dispatch({
       type: 'updateConfig',
@@ -115,6 +129,11 @@ const Explorer = (props: AppStateProps) => {
         [ConfigKey.mdFiles]: mdFiles,
       },
     });
+
+    // Reload doc if needed
+    if (filename === state.doc.fileName) {
+      reloadDoc(dir, mdFiles);
+    }
   };
 
   const reorderFiles = (

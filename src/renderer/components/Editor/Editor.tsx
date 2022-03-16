@@ -23,9 +23,9 @@ const Editor = (props: AppStateProps) => {
       mdFiles = mdFiles as string[];
       if (state.doc.fileName) {
         const currentIndex = mdFiles.indexOf(state.doc.fileName);
-        mdFiles.splice(currentIndex, 0, filename);
+        mdFiles.splice(currentIndex + 1, 0, filename);
       } else {
-        mdFiles.unshift(filename);
+        mdFiles.push(filename);
       }
 
       const files = (await window.ipcAPI?.loadFiles(state.dir, mdFiles)) || [];
