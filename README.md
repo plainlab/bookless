@@ -10,9 +10,9 @@
 - [x] Local markdown files edit
 - [x] Focus mode
 - [x] Drag & drop to organize chapters
-- [ ] Spelling check
+- [x] PDF / ePub / HTML export
 - [ ] Book & chapter preview
-- [ ] PDF / ePub / DOCX export
+- [ ] Spelling check
 
 ## Attributions
 

@@ -207,6 +207,7 @@ const Explorer = (props: AppStateProps) => {
                   state.files && state.files.length
                 ),
               })}
+              onClick={() => window.ipcAPI?.exportBook(state.dir)}
             />
           </section>
         </section>
