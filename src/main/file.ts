@@ -197,7 +197,9 @@ export const readConfigFile = async (
 
 export const saveConfigFile = async (filePath: string, conf: Meta) => {
   try {
-    const yaml = jsYaml.dump(conf);
+    // Skip currentDir config
+    const config = { ...conf, currentDir: undefined };
+    const yaml = jsYaml.dump(config);
     await writeFile(filePath, yaml, 'utf8');
   } catch (err) {
     dialog.showMessageBox({

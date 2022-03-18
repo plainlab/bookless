@@ -1,10 +1,9 @@
-import { spawn, SpawnOptionsWithoutStdio } from 'child_process';
+import { spawn } from 'child_process';
 import { dialog } from 'electron';
 import { Result } from 'helpers/result';
-import { extname } from 'path';
+import path, { extname } from 'path';
 import { JSON, Meta } from '../renderer/state/AppState';
 import { loadConfig } from './config';
-import { loadFile } from './file';
 
 const exportFormats = [
   { name: 'PDF (pdf)', extensions: ['pdf'] },
@@ -16,7 +15,6 @@ interface ExportOptions {
   dir: string;
   filename?: string;
   outputPath?: string;
-  spawnOpts?: SpawnOptionsWithoutStdio;
 }
 
 interface Out {
@@ -105,23 +103,23 @@ const runFileExport = async (exp: ExportOptions): Promise<Result<string>> => {
   const docMeta = await loadConfig(exp.dir);
   const out = validate(docMeta, exp.outputPath);
 
+  let mdFiles = [];
+  if (exp.filename) {
+    mdFiles = [path.join(exp.dir, exp.filename)];
+  } else {
+    mdFiles = (docMeta.mdFiles as string[]).map((f) => path.join(exp.dir, f));
+  }
+
   const cmd = 'pandoc';
-  const args = toArgs(out);
+  const args = toArgs(out).concat(...mdFiles);
   const cmdDebug = `${cmd} ${args
     .map((a) => (a.includes(' ') ? `'${a}'` : a))
     .join(' ')}`;
   let receivedError = false;
 
-  let content = '# TODO: Render multiple MD';
-  if (exp.filename) {
-    const doc = await loadFile(exp.dir, exp.filename);
-    content = doc?.md || '';
-  }
-
   const resultPromise = new Promise<Result<string>>((resolve) => {
     try {
-      const pandoc = spawn(cmd, args, exp.spawnOpts);
-      pandoc.stdin.write(content);
+      const pandoc = spawn(cmd, args);
       pandoc.stdin.end();
 
       pandoc.on('error', (err) => {
@@ -175,8 +173,6 @@ const fileExport = async (exp: ExportOptions) => {
 };
 
 const exportDialog = async (dir: string, filename?: string) => {
-  const spawnOpts: SpawnOptionsWithoutStdio = {};
-
   const res = await dialog.showSaveDialog({
     defaultPath: dir,
     buttonLabel: 'Export',
@@ -189,7 +185,6 @@ const exportDialog = async (dir: string, filename?: string) => {
       dir,
       filename,
       outputPath,
-      spawnOpts,
     };
     await fileExport(exp);
   }
