@@ -47,6 +47,10 @@ const loadConfig = async (dir: string): Promise<Meta> =>
 const saveConfig = async (dir: string, conf: Meta) =>
   ipcRenderer.invoke('saveConfig', dir, conf);
 
+const exportBook = async (dir: string) => ipcRenderer.invoke('exportBook', dir);
+const exportChapter = async (dir: string, filepath: string) =>
+  ipcRenderer.invoke('exportChapter', dir, filepath);
+
 const ipcAPI = {
   openDir,
   loadFile,
@@ -57,6 +61,8 @@ const ipcAPI = {
   loadConfig,
   saveConfig,
   renameFile,
+  exportBook,
+  exportChapter,
   send: {
     openLink: (lnk: string) => {
       if (typeof lnk === 'string') ipcRenderer.send('openLink', lnk);

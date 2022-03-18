@@ -83,6 +83,11 @@ const Editor = (props: AppStateProps) => {
                 'cursor-pointer hover:opacity-100': state.doc.filePath,
                 'cursor-not-allowed opacity-10': !state.doc.filePath,
               })}
+              onClick={() =>
+                state.doc.filePath &&
+                state.doc.fileName &&
+                window.ipcAPI?.exportChapter(state.dir, state.doc.fileName)
+              }
             />
           </section>
         </section>

@@ -11,6 +11,7 @@ import {
 } from './file';
 import { Message } from './preload';
 import { saveConfig, loadConfig } from './config';
+import { bookExportDialog, chapExportDialog } from './export';
 
 export const init = () => {
   ipcMain.handle('openDir', openDir);
@@ -31,6 +32,10 @@ export const init = () => {
   ipcMain.handle('loadConfig', (_event, dir: string) => loadConfig(dir));
   ipcMain.handle('saveConfig', (_event, dir: string, conf: Meta) =>
     saveConfig(dir, conf)
+  );
+  ipcMain.handle('exportBook', (_event, dir: string) => bookExportDialog(dir));
+  ipcMain.handle('exportChapter', (_event, dir: string, filename: string) =>
+    chapExportDialog(dir, filename)
   );
   ipcMain.on('openLink', (_event, link: string) => {
     shell.openExternal(link);

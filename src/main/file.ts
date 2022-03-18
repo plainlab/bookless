@@ -10,17 +10,17 @@ const mdExtensions = ['md', 'txt', 'markdown'];
 
 export const loadFile = async (
   dir: string,
-  fileName: string
+  filename: string
 ): Promise<Pick<Doc, 'md' | 'fileName' | 'filePath'> | undefined> => {
-  const filePath = path.join(dir, fileName);
+  const filePath = path.join(dir, filename);
 
   try {
     const md = await readFile(filePath, 'utf-8');
-    return { md, fileName, filePath };
+    return { md, fileName: filename, filePath };
   } catch (err) {
     dialog.showMessageBox({
       type: 'error',
-      message: `Could not load file: ${fileName}`,
+      message: `Could not load file: ${filename}`,
       detail: (err as Error).message,
     });
     return undefined;
@@ -197,7 +197,9 @@ export const readConfigFile = async (
 
 export const saveConfigFile = async (filePath: string, conf: Meta) => {
   try {
-    const yaml = jsYaml.dump(conf);
+    // Skip currentDir config
+    const config = { ...conf, currentDir: undefined };
+    const yaml = jsYaml.dump(config);
     await writeFile(filePath, yaml, 'utf8');
   } catch (err) {
     dialog.showMessageBox({
