@@ -19,23 +19,24 @@ const Editor = (props: AppStateProps) => {
 
     const filename = await window.ipcAPI?.newFile(state.dir);
     if (filename) {
-      let { mdFiles } = state.config;
-      mdFiles = mdFiles as string[];
+      let { inputFiles } = state.config;
+      inputFiles = inputFiles as string[];
       if (state.doc.fileName) {
-        const currentIndex = mdFiles.indexOf(state.doc.fileName);
-        mdFiles.splice(currentIndex + 1, 0, filename);
+        const currentIndex = inputFiles.indexOf(state.doc.fileName);
+        inputFiles.splice(currentIndex + 1, 0, filename);
       } else {
-        mdFiles.push(filename);
+        inputFiles.push(filename);
       }
 
-      const files = (await window.ipcAPI?.loadFiles(state.dir, mdFiles)) || [];
+      const files =
+        (await window.ipcAPI?.loadFiles(state.dir, inputFiles)) || [];
 
       dispatch({ type: 'initFiles', dir: state.dir, files });
       dispatch({
         type: 'updateConfig',
         config: {
           [ConfigKey.currentDir]: state.dir,
-          [ConfigKey.mdFiles]: mdFiles,
+          [ConfigKey.inputFiles]: inputFiles,
         },
       });
     }
