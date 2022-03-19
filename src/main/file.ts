@@ -1,10 +1,9 @@
 import fs from 'fs';
-import * as jsYaml from 'js-yaml';
 import { readFile, rename, unlink, writeFile } from 'fs/promises';
 import path from 'path';
 import { dialog } from 'electron';
 import { truncate, pathToName } from '../helpers/string';
-import { Doc, DocFile, Meta } from '../renderer/state/AppState';
+import { Doc, DocFile } from '../renderer/state/AppState';
 
 const mdExtensions = ['md', 'txt', 'markdown'];
 
@@ -175,37 +174,4 @@ export const openDir = async () => {
         fs.lstatSync(path.join(dir, file)).isFile()
     );
   return { dir, filenames };
-};
-
-export const readConfigFile = async (
-  dirName: string,
-  fileName: string
-): Promise<Meta | undefined> => {
-  try {
-    const str = await readFile(path.join(dirName, fileName), 'utf8');
-    const yaml = jsYaml.load(str);
-    return typeof yaml === 'object' ? (yaml as Meta) : {};
-  } catch (err) {
-    dialog.showMessageBox({
-      type: 'error',
-      message: `Error loading config file: ${fileName}`,
-      detail: (err as Error).message,
-    });
-    return undefined;
-  }
-};
-
-export const saveConfigFile = async (filePath: string, conf: Meta) => {
-  try {
-    // Skip currentDir config
-    const config = { ...conf, currentDir: undefined };
-    const yaml = jsYaml.dump(config);
-    await writeFile(filePath, yaml, 'utf8');
-  } catch (err) {
-    dialog.showMessageBox({
-      type: 'error',
-      message: `Error saving config file: ${filePath}`,
-      detail: (err as Error).message,
-    });
-  }
 };

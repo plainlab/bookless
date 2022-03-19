@@ -41,12 +41,7 @@ const renderOption = (o: string) => (
 
 const metaKvs: Kv[] = [
   {
-    name: ConfigKey.bookFilename,
-    label: 'Book filename',
-    type: 'string',
-  },
-  {
-    name: ConfigKey.mdFiles,
+    name: ConfigKey.inputFiles,
     label: 'Book chapters',
     type: 'textarea',
     disabled: true,
@@ -72,6 +67,23 @@ const metaKvs: Kv[] = [
     label: 'Language',
     type: 'string',
     placeholder: 'en',
+  },
+  {
+    name: ConfigKey.font,
+    label: 'Font',
+    type: 'string',
+  },
+  {
+    name: ConfigKey.fontSize,
+    label: 'Font size',
+    type: 'number',
+    step: 1,
+  },
+  {
+    name: ConfigKey.lineHeight,
+    label: 'Line height',
+    type: 'number',
+    step: 1,
   },
 ];
 

@@ -1,9 +1,9 @@
 import { spawn } from 'child_process';
 import { dialog } from 'electron';
 import { Result } from 'helpers/result';
-import path, { extname } from 'path';
+import path from 'path';
 import { JSON, Meta } from '../renderer/state/AppState';
-import { loadConfig } from './config';
+import { bookless2pandoc, loadConfig } from './config';
 
 const exportFormats = [
   { name: 'PDF (pdf)', extensions: ['pdf'] },
@@ -25,47 +25,27 @@ interface Out {
   [key: string]: undefined | JSON;
 }
 
-const validate = (bookMeta: Meta, outputPath?: string): Out => {
-  let toFormat: string;
-  if (outputPath) {
-    toFormat = extname(outputPath);
-    if (toFormat && toFormat[0] === '.') {
-      toFormat = toFormat.substring(1);
-    }
-    if (toFormat === 'tex') {
-      toFormat = 'latex';
-    }
-  } else {
+const buildOut = (exp: ExportOptions, conf: Meta): Out => {
+  if (!exp.outputPath) {
     return {};
   }
 
-  const jsonToObj = (m: JSON): Meta =>
-    m && typeof m === 'object' && !Array.isArray(m) ? m : {};
+  const out: Out = {};
 
-  const extractOut = (meta: Meta) =>
-    meta?.output &&
-    typeof meta.output === 'object' &&
-    !Array.isArray(meta.output)
-      ? jsonToObj(meta.output[toFormat])
-      : {};
-  const out: Out = { ...extractOut(bookMeta) };
-
-  if (typeof out.metadata !== 'object') {
-    out.metadata = {};
-  }
-  if (bookMeta.mainfont === undefined) {
-    out.metadata.mainfont =
-      '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif';
-  }
-  if (bookMeta.monobackgroundcolor === undefined) {
-    out.metadata.monobackgroundcolor = '#f0f0f0';
-  }
-
-  if (outputPath) {
-    out.output = outputPath;
-  }
-
+  // Default args
+  out.output = exp.outputPath;
+  out.from = 'markdown+header_attributes+footnotes+tex_math_dollars';
   out.standalone = true;
+
+  if (!exp.filename) {
+    out.toc = true;
+  }
+  out['number-sections'] = true;
+  out['top-level-division'] = 'chapter';
+
+  // From conf: variables, meta
+  const pd = bookless2pandoc(conf);
+  out.variable = pd.variables;
   return out;
 };
 
@@ -90,7 +70,6 @@ const toArgs = (out: Out) => {
     } else if (val !== false) {
       args.push(`--${opt}`);
       if (val && val !== true) {
-        // pandoc boolean options don't take a value
         args.push(val.toString());
       }
     }
@@ -100,18 +79,22 @@ const toArgs = (out: Out) => {
 };
 
 const runFileExport = async (exp: ExportOptions): Promise<Result<string>> => {
-  const docMeta = await loadConfig(exp.dir);
-  const out = validate(docMeta, exp.outputPath);
+  const conf = await loadConfig(exp.dir);
+  const out = buildOut(exp, conf);
 
-  let mdFiles = [];
+  // List of md files
+  let inputFiles: string[] = [];
   if (exp.filename) {
-    mdFiles = [path.join(exp.dir, exp.filename)];
+    inputFiles = [path.join(exp.dir, exp.filename)];
   } else {
-    mdFiles = (docMeta.mdFiles as string[]).map((f) => path.join(exp.dir, f));
+    inputFiles = (conf.inputFiles as string[]).map((f) =>
+      path.join(exp.dir, f)
+    );
   }
 
+  // Build command
   const cmd = 'pandoc';
-  const args = toArgs(out).concat(...mdFiles);
+  const args = toArgs(out).concat(...inputFiles);
   const cmdDebug = `${cmd} ${args
     .map((a) => (a.includes(' ') ? `'${a}'` : a))
     .join(' ')}`;

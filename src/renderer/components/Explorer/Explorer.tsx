@@ -32,9 +32,9 @@ const Explorer = (props: AppStateProps) => {
     }
   };
 
-  const reloadDoc = (dir: string, mdFiles: string[]) => {
-    if (mdFiles.length) {
-      chooseFile(dir, mdFiles[0]);
+  const reloadDoc = (dir: string, inputFiles: string[]) => {
+    if (inputFiles.length) {
+      chooseFile(dir, inputFiles[0]);
     } else {
       dispatch({
         type: 'initDoc',
@@ -51,30 +51,30 @@ const Explorer = (props: AppStateProps) => {
     let { dir, filenames } = (await window.ipcAPI?.openDir()) || {};
     if (dir) {
       const config = (await window.ipcAPI?.loadConfig(dir)) || {};
-      let { mdFiles } = config;
+      let { inputFiles } = config;
 
       // Load files
-      mdFiles = (mdFiles as string[]) || filenames;
-      const docFiles = (await window.ipcAPI?.loadFiles(dir, mdFiles)) || [];
+      inputFiles = (inputFiles as string[]) || filenames;
+      const docFiles = (await window.ipcAPI?.loadFiles(dir, inputFiles)) || [];
 
       // Init state
       dispatch({ type: 'initFiles', dir, files: docFiles });
       dispatch({
         type: 'initConfig',
-        config: { ...config, mdFiles, currentDir: dir },
+        config: { ...config, inputFiles, currentDir: dir },
       });
-      if (config.mdFiles !== mdFiles) {
+      if (config.inputFiles !== inputFiles) {
         dispatch({
           type: 'updateConfig',
           config: {
             [ConfigKey.currentDir]: dir,
-            [ConfigKey.mdFiles]: mdFiles,
+            [ConfigKey.inputFiles]: inputFiles,
           },
         });
       }
 
       // Reload doc if needed
-      reloadDoc(dir, mdFiles);
+      reloadDoc(dir, inputFiles);
     }
   };
 
@@ -85,11 +85,11 @@ const Explorer = (props: AppStateProps) => {
     }
 
     // Load files
-    let { mdFiles } = state.config;
-    mdFiles = mdFiles as string[];
-    const currentIndex = mdFiles.indexOf(filename);
-    mdFiles.splice(currentIndex, 1, newFilename);
-    const files = (await window.ipcAPI?.loadFiles(dir, mdFiles)) || [];
+    let { inputFiles } = state.config;
+    inputFiles = inputFiles as string[];
+    const currentIndex = inputFiles.indexOf(filename);
+    inputFiles.splice(currentIndex, 1, newFilename);
+    const files = (await window.ipcAPI?.loadFiles(dir, inputFiles)) || [];
 
     // Update state
     dispatch({ type: 'initFiles', dir, files });
@@ -97,7 +97,7 @@ const Explorer = (props: AppStateProps) => {
       type: 'updateConfig',
       config: {
         [ConfigKey.currentDir]: dir,
-        [ConfigKey.mdFiles]: mdFiles,
+        [ConfigKey.inputFiles]: inputFiles,
       },
     });
 
@@ -114,11 +114,11 @@ const Explorer = (props: AppStateProps) => {
     }
 
     // Update files
-    let { mdFiles } = state.config;
-    mdFiles = mdFiles as string[];
-    const currentIndex = mdFiles.indexOf(filename);
-    mdFiles.splice(currentIndex, 1);
-    const files = (await window.ipcAPI?.loadFiles(dir, mdFiles)) || [];
+    let { inputFiles } = state.config;
+    inputFiles = inputFiles as string[];
+    const currentIndex = inputFiles.indexOf(filename);
+    inputFiles.splice(currentIndex, 1);
+    const files = (await window.ipcAPI?.loadFiles(dir, inputFiles)) || [];
 
     // Set states
     dispatch({ type: 'initFiles', dir, files });
@@ -126,13 +126,13 @@ const Explorer = (props: AppStateProps) => {
       type: 'updateConfig',
       config: {
         [ConfigKey.currentDir]: dir,
-        [ConfigKey.mdFiles]: mdFiles,
+        [ConfigKey.inputFiles]: inputFiles,
       },
     });
 
     // Reload doc if needed
     if (filename === state.doc.fileName) {
-      reloadDoc(dir, mdFiles);
+      reloadDoc(dir, inputFiles);
     }
   };
 
@@ -154,14 +154,14 @@ const Explorer = (props: AppStateProps) => {
     ) {
       const [from, to] = [result.source.index, result.destination.index];
       const files = reorderFiles(state.files, from, to);
-      const mdFiles = files.map((f) => f.name);
+      const inputFiles = files.map((f) => f.name);
 
       dispatch({ type: 'initFiles', dir: state.dir, files });
       dispatch({
         type: 'updateConfig',
         config: {
           [ConfigKey.currentDir]: state.dir,
-          [ConfigKey.mdFiles]: mdFiles,
+          [ConfigKey.inputFiles]: inputFiles,
         },
       });
     }

@@ -48,8 +48,8 @@ const saveConfig = async (dir: string, conf: Meta) =>
   ipcRenderer.invoke('saveConfig', dir, conf);
 
 const exportBook = async (dir: string) => ipcRenderer.invoke('exportBook', dir);
-const exportChapter = async (dir: string, filepath: string) =>
-  ipcRenderer.invoke('exportChapter', dir, filepath);
+const exportChapter = async (dir: string, filename: string) =>
+  ipcRenderer.invoke('exportChapter', dir, filename);
 
 const ipcAPI = {
   openDir,

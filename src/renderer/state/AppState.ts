@@ -25,20 +25,18 @@ export interface DocFile {
 }
 
 export const ConfigKey = {
+  // State settings
   currentDir: 'currentDir',
-  // Render
-  bookFilename: 'bookFilename',
-  mdFiles: 'mdFiles',
-  // Meta
-  title: 'title',
-  author: 'author',
-  date: 'date',
-  lang: 'lang',
-  // Layout
-  font: 'font',
-  fontSize: 'fontSize',
-  lineHeight: 'lineHeight',
-  headerIncludes: 'headerIncludes',
+  // Pandoc defaults
+  inputFiles: 'inputFiles',
+  title: 'variables.title',
+  author: 'variables.author',
+  date: 'variables.date',
+  lang: 'variables.lang',
+  font: 'variables.mainfont',
+  fontSize: 'variables.fontsize',
+  lineHeight: 'variables.linestretch',
+  headerIncludes: 'variables.headerIncludes',
 };
 
 export type Meta = Record<string, JSON>;
@@ -60,13 +58,12 @@ export const initialState: AppState = {
     bodyMd: '',
     meta: {},
     html: '',
-    fileName: 'Untitled',
+    fileName: '',
     filePath: undefined,
   },
   configOpen: false,
   config: {
-    bookFilename: 'Untitled',
-    mdFiles: [],
+    inputFiles: [],
   },
   paginated: false,
   explorer: true,
