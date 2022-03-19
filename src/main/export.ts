@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import { dialog } from 'electron';
 import { Result } from 'helpers/result';
-import path, { extname } from 'path';
+import path from 'path';
 import { JSON, Meta } from '../renderer/state/AppState';
 import { bookless2pandoc, loadConfig } from './config';
 
@@ -36,7 +36,10 @@ const buildOut = (exp: ExportOptions, conf: Meta): Out => {
   out.output = exp.outputPath;
   out.from = 'markdown+header_attributes+footnotes+tex_math_dollars';
   out.standalone = true;
-  out.toc = true;
+
+  if (!exp.filename) {
+    out.toc = true;
+  }
   out['number-sections'] = true;
   out['top-level-division'] = 'chapter';
 
