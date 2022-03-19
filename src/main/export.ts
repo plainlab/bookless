@@ -1,9 +1,9 @@
 import { spawn } from 'child_process';
 import { dialog } from 'electron';
 import { Result } from 'helpers/result';
-import path from 'path';
+import path, { extname } from 'path';
 import { JSON, Meta } from '../renderer/state/AppState';
-import { bookConfigFile, loadConfig } from './config';
+import { bookless2pandoc, loadConfig } from './config';
 
 const exportFormats = [
   { name: 'PDF (pdf)', extensions: ['pdf'] },
@@ -25,17 +25,24 @@ interface Out {
   [key: string]: undefined | JSON;
 }
 
-const buildOut = (exp: ExportOptions): Out => {
+const buildOut = (exp: ExportOptions, conf: Meta): Out => {
   if (!exp.outputPath) {
     return {};
   }
 
   const out: Out = {};
+
+  // Default args
   out.output = exp.outputPath;
   out.from = 'markdown+header_attributes+footnotes+tex_math_dollars';
   out.standalone = true;
+  out.toc = true;
   out['number-sections'] = true;
   out['top-level-division'] = 'chapter';
+
+  // From conf: variables, meta
+  const pd = bookless2pandoc(conf);
+  out.variable = pd.variables;
   return out;
 };
 
@@ -69,14 +76,14 @@ const toArgs = (out: Out) => {
 };
 
 const runFileExport = async (exp: ExportOptions): Promise<Result<string>> => {
-  const out = buildOut(exp);
+  const conf = await loadConfig(exp.dir);
+  const out = buildOut(exp, conf);
 
   // List of md files
   let inputFiles: string[] = [];
   if (exp.filename) {
     inputFiles = [path.join(exp.dir, exp.filename)];
   } else {
-    const conf = await loadConfig(exp.dir);
     inputFiles = (conf.inputFiles as string[]).map((f) =>
       path.join(exp.dir, f)
     );

@@ -6,9 +6,9 @@ import { readFile, writeFile } from 'fs/promises';
 import { dialog } from 'electron';
 import { Meta } from '../renderer/state/AppState';
 
-export const bookConfigFile = '_bookless.yaml';
+const bookConfigFile = '_bookless.yaml';
 
-const bookless2pandoc = (conf: Meta): Meta => {
+export const bookless2pandoc = (conf: Meta): Meta => {
   const pandoc = {};
   Object.entries(conf).map(([k, v]) =>
     _.set(
@@ -20,7 +20,7 @@ const bookless2pandoc = (conf: Meta): Meta => {
   return pandoc;
 };
 
-const pandoc2bookless = (conf: object): Meta => {
+export const pandoc2bookless = (conf: object): Meta => {
   const bookless: Meta = {};
 
   (function recurse(obj: object, current?: string) {
