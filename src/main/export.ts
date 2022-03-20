@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import { dialog } from 'electron';
 import path from 'path';
 import { Result } from '../helpers/result';
-import { getExecPath } from '../helpers/platform';
+import { getExecPath, getPlatform } from '../helpers/platform';
 import { JSON, Meta } from '../renderer/state/AppState';
 import { bookless2pandoc, loadConfig } from './config';
 
@@ -43,6 +43,11 @@ const buildOut = (exp: ExportOptions, conf: Meta): Out => {
   }
   out['number-sections'] = true;
   out['top-level-division'] = 'chapter';
+
+  // FIXME: https://github.com/jgm/pandoc/issues/7570
+  if (getPlatform() === 'mac') {
+    out['pdf-engine'] = '/Library/TeX/texbin/pdflatex';
+  }
 
   // From conf: variables, meta
   const pd = bookless2pandoc(conf);
@@ -110,10 +115,9 @@ const runFileExport = async (exp: ExportOptions): Promise<Result<string>> => {
         receivedError = true;
         dialog.showMessageBox({
           type: 'error',
-          message: 'Failed to call pandoc',
-          detail: `Make sure you have it installed, see pandoc.org/installing
+          message: 'Failed to export',
+          detail: `You may need to install Latex for your system to export PDF: https://www.latex-project.org/get/
 
-Failed to execute command:
 ${cmdDebug}
 
 ${err.message}`,
@@ -127,13 +131,15 @@ ${err.message}`,
 
       pandoc.on('close', (exitCode) => {
         const success = exitCode === 0;
-        const toMsg = `Called: ${cmdDebug}`;
         if (!receivedError) {
-          const detail = [toMsg, ''].concat(errout.join('')).join('\n');
           if (success) {
-            resolve(detail);
+            const message = `Created file: ${exp.outputPath}`;
+            resolve(message);
           } else {
-            resolve({ error: detail });
+            const error = [`Called: ${cmdDebug}`, '']
+              .concat(errout.join(''))
+              .join('\n');
+            resolve({ error });
           }
         }
       });
