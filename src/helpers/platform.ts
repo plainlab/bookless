@@ -1,6 +1,6 @@
 import { platform } from 'os';
 import path, { dirname } from 'path';
-import appRootDir from 'app-root-dir';
+import { app } from 'electron';
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 
@@ -21,9 +21,10 @@ export const getPlatform = () => {
 };
 
 export const getExecPath = (lib: string) => {
+  const rootDir = dirname(app.getAppPath());
   const binariesPath = IS_PROD
-    ? path.join(dirname(appRootDir.get()), './bin')
-    : path.join(appRootDir.get(), 'resources', getPlatform());
+    ? path.join(rootDir, './bin')
+    : path.join(rootDir, '..', 'resources', getPlatform());
   return path.resolve(
     path.join(binariesPath, `./${lib}${getPlatform() === 'win' ? '.exe' : ''}`)
   );
