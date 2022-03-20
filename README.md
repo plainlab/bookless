@@ -14,10 +14,9 @@
 - [ ] Book & chapter preview
 - [ ] Spelling check
 
-## Attributions
+## Credits
 
 - Code base inspired by [PanWriter][1]
-- Pandoc integration inspired by [Zettlr][2]
 - Logo by [mavadee][3]
 
 ---
@@ -25,5 +24,4 @@
 &copy; 2022 PlainLab
 
 [1]: https://github.com/mb21/panwriter
-[2]: https://github.com/Zettlr/Zettlr
 [3]: https://www.flaticon.com/authors/mavadee

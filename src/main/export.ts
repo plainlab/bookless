@@ -1,7 +1,8 @@
 import { spawn } from 'child_process';
 import { dialog } from 'electron';
-import { Result } from 'helpers/result';
 import path from 'path';
+import { Result } from '../helpers/result';
+import { getExecPath } from '../helpers/platform';
 import { JSON, Meta } from '../renderer/state/AppState';
 import { bookless2pandoc, loadConfig } from './config';
 
@@ -93,7 +94,7 @@ const runFileExport = async (exp: ExportOptions): Promise<Result<string>> => {
   }
 
   // Build command
-  const cmd = 'pandoc';
+  const cmd = getExecPath('pandoc');
   const args = toArgs(out).concat(...inputFiles);
   const cmdDebug = `${cmd} ${args
     .map((a) => (a.includes(' ') ? `'${a}'` : a))
