@@ -40,6 +40,7 @@
       "node_modules",
       "package.json"
     ],
+    "beforeBuild": ".erb/scripts/embed-pandoc.js",
     "afterSign": ".erb/scripts/notarize.js",
     "mac": {
       "target": {
@@ -88,6 +89,15 @@
     "extraResources": [
       "./assets/**"
     ],
+    "extraFiles": [
+      {
+        "from": "resources/${os}",
+        "to": "Resources/bin",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "publish": {
       "provider": "github",
       "owner": "plainlab",
@@ -115,14 +125,12 @@
     "url": "https://github.com/plainlab/bookless/issues"
   },
   "keywords": [
-    "electron",
-    "react",
-    "typescript",
-    "ts",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
+    "book-writing",
+    "markdown",
+    "pdf",
+    "epub",
+    "html",
+    "cross-platform"
   ],
   "homepage": "https://github.com/plainlab/bookless#readme",
   "jest": {
