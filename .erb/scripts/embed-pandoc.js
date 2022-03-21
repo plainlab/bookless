@@ -57,8 +57,6 @@ exports.default = async function embedPandoc (context) {
   // macOS has Rosetta 2 built-in, so we can bundle Pandoc 64bit
   const supportsPandoc = is64Bit || (isMacOS && isArm64) || (isLinux && isArm64)
 
-  // Create resources folder
-  await fs.mkdir(path.join(__dirname, '..', '..', `./resources/${platform}/`), { recursive: true })
 
   if (supportsPandoc && isWin) {
     // Download Pandoc beforehand, if it's not yet there.
@@ -68,15 +66,17 @@ exports.default = async function embedPandoc (context) {
       await downloadPandoc('win', 'x64')
     }
 
-    await fs.copyFile(path.join(__dirname, './pandoc-win-x64.exe'), path.join(__dirname, '..', '..', `./resources/${platform}/pandoc.exe`))
+    await fs.mkdir(path.join(__dirname, '..', '..', `./resources/win/`), { recursive: true })
+    await fs.copyFile(path.join(__dirname, './pandoc-win-x64.exe'), path.join(__dirname, '..', '..', `./resources/win/pandoc.exe`))
   } else if (supportsPandoc && (isMacOS || isLinux)) {
     const pandocArch = (isLinux && isArm64) ? 'arm64' : 'x64'
     try {
-      await fs.lstat(path.join(__dirname, `./pandoc-${platform}-${pandocArch}`))
+      await fs.lstat(path.join(__dirname, `./pandoc-${pandocPlatform}-${pandocArch}`))
     } catch (err) {
       await downloadPandoc(platform, pandocArch)
     }
 
+    await fs.mkdir(path.join(__dirname, '..', '..', `./resources/${platform}/`), { recursive: true })
     await fs.copyFile(path.join(__dirname, `./pandoc-${platform}-${pandocArch}`), path.join(__dirname, '..', '..', `./resources/${platform}/pandoc`))
   } else {
     // If someone is building this on an unsupported platform, drop a warning.
