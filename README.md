@@ -10,11 +10,21 @@
 - [x] Local markdown files edit
 - [x] Focus mode
 - [x] Drag & drop to organize chapters
-- [x] PDF / ePub / HTML export
+- [x] PDF / ePub / HTML export (Latex is required for PDF export)
 - [ ] Book & chapter preview
 - [ ] Spelling check
 
-## Attributions
+## Installation
+
+- For PDF export, install [Latex][4] first.
+- Download binary for your OS on [release page][5].
+
+  - macOS: Get `.dmg` file, open it and drag the app into Applications folder, for Apple
+    Silicon mac: get `arm64.dmg` file instead.
+  - Windows: Get `.exe` file and open it to install.
+  - Linux: Get `.AppImage` file to install, for ARM laptop: get `arm64.AppImage` file instead.
+
+## Credits
 
 - Code base inspired by [PanWriter][1]
 - Pandoc integration inspired by [Zettlr][2]
@@ -27,3 +37,5 @@
 [1]: https://github.com/mb21/panwriter
 [2]: https://github.com/Zettlr/Zettlr
 [3]: https://www.flaticon.com/authors/mavadee
+[4]: https://www.latex-project.org/get/
+[5]: https://github.com/plainlab/bookless/releases
