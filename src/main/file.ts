@@ -1,11 +1,25 @@
 import fs from 'fs';
 import { readFile, rename, unlink, writeFile } from 'fs/promises';
 import path from 'path';
-import { dialog } from 'electron';
+import { clipboard, dialog } from 'electron';
 import { truncate, pathToName } from '../helpers/string';
 import { Doc, DocFile } from '../renderer/state/AppState';
 
 const mdExtensions = ['md', 'txt', 'markdown'];
+
+const IS_MAC = process.platform === 'darwin';
+const IS_WIN32 = process.platform === 'win32';
+
+function getFilePathFromClipboard() {
+  if (IS_WIN32) {
+    const rawFilePath = clipboard.read('FileNameW');
+    return rawFilePath.replace(new RegExp(String.fromCharCode(0), 'g'), '');
+  }
+  if (IS_MAC) {
+    return clipboard.read('public.file-url').replace('file://', '');
+  }
+  return clipboard.readText();
+}
 
 export const loadFile = async (
   dir: string,
@@ -174,4 +188,40 @@ export const openDir = async () => {
         fs.lstatSync(path.join(dir, file)).isFile()
     );
   return { dir, filenames };
+};
+
+export const copyFileToAssets = async (
+  dir: string,
+  from: string,
+  to: string
+) => {
+  if (from && fs.statSync(from).isDirectory()) {
+    throw new Error('not support copy directory');
+  }
+
+  const dest = path.join(dir, to);
+  const assetsRoot = path.dirname(dest);
+
+  if (!/assets$/.test(assetsRoot)) {
+    throw new Error('illegal assets dirname');
+  }
+
+  await fs.promises.mkdir(assetsRoot, { recursive: true });
+
+  const fromD = from && decodeURIComponent(from || getFilePathFromClipboard());
+
+  if (fromD) {
+    await fs.promises.copyFile(fromD, dest);
+    return path.basename(fromD);
+  }
+
+  // support image
+  const nImg = clipboard.readImage();
+
+  if (nImg && !nImg.isEmpty()) {
+    const rawExt = path.extname(dest);
+    return fs.promises.writeFile(dest.replace(rawExt, '.png'), nImg.toPNG());
+  }
+
+  return '';
 };

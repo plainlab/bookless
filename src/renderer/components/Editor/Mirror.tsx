@@ -1,4 +1,4 @@
-import { countColumn, Editor as CMEditor } from 'codemirror';
+import { countColumn, Editor as CMEditor, EditorChange } from 'codemirror';
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/search/search';
 import 'codemirror/addon/search/searchcursor';
@@ -77,9 +77,21 @@ const onEditorDidMount = (editor: CMEditor) => {
 const Mirror = (props: AppStateProps) => {
   const { state, dispatch } = props;
 
+  const onBeforeChange = (ed: CMEditor, ec: EditorChange, md: string) => {
+    if (ec.origin === 'paste') {
+      const newText = `[${ec.text}]()`;
+      ed.replaceRange(newText, ec.from, {
+        line: ec.to.line,
+        ch: ec.to.ch + newText.length,
+      });
+    } else {
+      dispatch({ type: 'updateMd', md });
+    }
+  };
+
   return (
     <CodeMirror
-      onBeforeChange={(_ed, _diff, md) => dispatch({ type: 'updateMd', md })}
+      onBeforeChange={onBeforeChange}
       editorDidMount={onEditorDidMount}
       value={state.doc.md}
       autoCursor

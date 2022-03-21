@@ -51,6 +51,9 @@ const exportBook = async (dir: string) => ipcRenderer.invoke('exportBook', dir);
 const exportChapter = async (dir: string, filename: string) =>
   ipcRenderer.invoke('exportChapter', dir, filename);
 
+const copyFileToAssets = async (dir: string, from: string, to: string) =>
+  ipcRenderer.invoke('copyFileToAssets', dir, from, to);
+
 const ipcAPI = {
   openDir,
   loadFile,
@@ -63,6 +66,7 @@ const ipcAPI = {
   renameFile,
   exportBook,
   exportChapter,
+  copyFileToAssets,
   send: {
     openLink: (lnk: string) => {
       if (typeof lnk === 'string') ipcRenderer.send('openLink', lnk);
@@ -76,7 +80,6 @@ const ipcAPI = {
     find: (cb: () => void) => ipcRenderer.on('find', cb),
     findNext: (cb: () => void) => ipcRenderer.on('findNext', cb),
     findPrevious: (cb: () => void) => ipcRenderer.on('findPrevious', cb),
-    printFile: (cb: () => void) => ipcRenderer.on('printFile', cb),
     openDir: (cb: () => void) => ipcRenderer.on('openDir', cb),
     newFile: (cb: () => void) => ipcRenderer.on('newFile', cb),
     sendPlatform: (cb: (p: string) => void) =>
