@@ -79,11 +79,20 @@ const Mirror = (props: AppStateProps) => {
 
   const onBeforeChange = (ed: CMEditor, ec: EditorChange, md: string) => {
     if (ec.origin === 'paste') {
-      const newText = `[${ec.text}]()`;
-      ed.replaceRange(newText, ec.from, {
-        line: ec.to.line,
-        ch: ec.to.ch + newText.length,
-      });
+      const oldText = ec.text[0];
+      window.ipcAPI
+        ?.copyFileToAssets(state.dir, oldText)
+        .then((newText: string) => {
+          if (newText.includes('assets') && newText !== oldText) {
+            const text = `[${oldText}](${newText})`;
+            ed.execCommand('undo');
+            ed.setCursor(ec.from);
+            ed.replaceSelection(text);
+          } else {
+            dispatch({ type: 'updateMd', md });
+          }
+          return null;
+        });
     } else {
       dispatch({ type: 'updateMd', md });
     }

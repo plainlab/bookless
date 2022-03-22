@@ -51,8 +51,8 @@ const exportBook = async (dir: string) => ipcRenderer.invoke('exportBook', dir);
 const exportChapter = async (dir: string, filename: string) =>
   ipcRenderer.invoke('exportChapter', dir, filename);
 
-const copyFileToAssets = async (dir: string, from: string, to: string) =>
-  ipcRenderer.invoke('copyFileToAssets', dir, from, to);
+const copyFileToAssets = async (dir: string, from: string) =>
+  ipcRenderer.invoke('copyFileToAssets', dir, from);
 
 const ipcAPI = {
   openDir,

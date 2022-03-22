@@ -38,10 +38,8 @@ export const init = () => {
   ipcMain.handle('exportChapter', (_event, dir: string, filename: string) =>
     chapExportDialog(dir, filename)
   );
-  ipcMain.handle(
-    'copyFileToAssets',
-    (_event, dir: string, from: string, to: string) =>
-      copyFileToAssets(dir, from, to)
+  ipcMain.handle('copyFileToAssets', (_event, dir: string, from: string) =>
+    copyFileToAssets(dir, from)
   );
   ipcMain.on('openLink', (_event, link: string) => {
     shell.openExternal(link);

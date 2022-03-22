@@ -2,6 +2,7 @@ import fs from 'fs';
 import { readFile, rename, unlink, writeFile } from 'fs/promises';
 import path from 'path';
 import { clipboard, dialog } from 'electron';
+import { nanoid } from 'nanoid';
 import { truncate, pathToName } from '../helpers/string';
 import { Doc, DocFile } from '../renderer/state/AppState';
 
@@ -190,38 +191,33 @@ export const openDir = async () => {
   return { dir, filenames };
 };
 
-export const copyFileToAssets = async (
-  dir: string,
-  from: string,
-  to: string
-) => {
-  if (from && fs.statSync(from).isDirectory()) {
-    throw new Error('not support copy directory');
-  }
+export const copyFileToAssets = async (dir: string, from: string) => {
+  const rawExt = path.extname(from);
+  const newFilename = path.join('assets', `${nanoid()}${rawExt}`);
 
-  const dest = path.join(dir, to);
-  const assetsRoot = path.dirname(dest);
-
-  if (!/assets$/.test(assetsRoot)) {
-    throw new Error('illegal assets dirname');
-  }
+  const dest = path.join(dir, newFilename);
+  const assetsRoot = path.basename(dest);
 
   await fs.promises.mkdir(assetsRoot, { recursive: true });
 
-  const fromD = from && decodeURIComponent(from || getFilePathFromClipboard());
-
-  if (fromD) {
-    await fs.promises.copyFile(fromD, dest);
-    return path.basename(fromD);
-  }
-
-  // support image
+  // Paste image
   const nImg = clipboard.readImage();
-
   if (nImg && !nImg.isEmpty()) {
-    const rawExt = path.extname(dest);
-    return fs.promises.writeFile(dest.replace(rawExt, '.png'), nImg.toPNG());
+    const pngFile = dest.replace(rawExt, '.png');
+    await fs.promises.writeFile(pngFile, nImg.toPNG());
+    return newFilename.replace(rawExt, '.png');
   }
 
-  return '';
+  // Paste file path
+  const fromClipboard = decodeURIComponent(getFilePathFromClipboard());
+  if (fromClipboard) {
+    try {
+      await fs.promises.copyFile(fromClipboard, dest);
+      return newFilename;
+    } catch (e) {
+      return from;
+    }
+  }
+
+  return from;
 };
