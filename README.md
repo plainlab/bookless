@@ -3,16 +3,18 @@
 
 # Bookless
 
-> A no-hassle book-writing app that let you write your books in markdown.
+> A no-hassle book-writing app that let you write your books in plain text files.
 
 ## Features
 
-- [x] Local markdown files edit
-- [x] Focus mode
-- [x] Drag & drop to organize chapters
-- [x] PDF / ePub / HTML export (Latex is required for PDF export)
-- [ ] Book & chapter preview
-- [ ] Spelling check
+- [x] Write books in local plain text files, you own your content, no vendor lock-in
+- [x] Support markdown syntax with Pandoc extensions for building books
+- [x] No-distraction writing mode
+- [x] Organize chapters visually with drag & drop
+- [x] Export books to PDF / ePub / HTML (Latex is required for PDF export)
+- [ ] Multilingual spelling check
+- [ ] Beautiful default book template
+- [x] Cross-platform: Windows, macOS, Linux
 
 ## Installation
 
