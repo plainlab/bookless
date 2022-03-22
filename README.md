@@ -12,9 +12,11 @@
 - [x] No-distraction writing mode
 - [x] Organize chapters visually with drag & drop
 - [x] Export books to PDF / ePub / HTML (Latex is required for PDF export)
+- [x] Cross-platform: Windows, macOS, Linux
+- [x] Paste images directly into editor
 - [ ] Multilingual spelling check
 - [ ] Beautiful default book template
-- [x] Cross-platform: Windows, macOS, Linux
+- [ ] Markdown preview mode
 
 ## Installation
 
