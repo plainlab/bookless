@@ -81,7 +81,7 @@ const Mirror = (props: AppStateProps) => {
     if (ec.origin === 'paste') {
       const oldText = ec.text[0];
       window.ipcAPI
-        ?.copyFileToAssets(state.dir, oldText)
+        ?.pasteImageToAssets(state.dir, oldText)
         .then((newText: string) => {
           if (newText.includes('assets') && newText !== oldText) {
             const text = `[${oldText}](${newText})`;
