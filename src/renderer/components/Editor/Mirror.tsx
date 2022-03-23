@@ -79,14 +79,14 @@ const Mirror = (props: AppStateProps) => {
 
   const onBeforeChange = (ed: CMEditor, ec: EditorChange, md: string) => {
     if (ec.origin === 'paste') {
-      const oldText = ec.text[0];
+      const oldText = ec.text[0] || 'image.png';
       window.ipcAPI
         ?.pasteImageToAssets(state.dir, oldText)
         .then((newText: string) => {
           if (newText.includes('assets') && newText !== oldText) {
-            const text = `[${oldText}](${newText})`;
+            const text = `![${oldText}](${newText})`;
             ed.execCommand('undo');
-            ed.setCursor(ec.from);
+            ed.setSelection(ec.to, ec.from);
             ed.replaceSelection(text);
           } else {
             dispatch({ type: 'updateMd', md });
