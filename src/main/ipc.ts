@@ -8,6 +8,7 @@ import {
   saveFile,
   loadFiles,
   renameFile,
+  copyFileToAssets,
 } from './file';
 import { Message } from './preload';
 import { saveConfig, loadConfig } from './config';
@@ -37,6 +38,9 @@ export const init = () => {
   ipcMain.handle('exportChapter', (_event, dir: string, filename: string) =>
     chapExportDialog(dir, filename)
   );
+  ipcMain.handle('copyFileToAssets', (_event, dir: string, from: string) =>
+    copyFileToAssets(dir, from)
+  );
   ipcMain.on('openLink', (_event, link: string) => {
     shell.openExternal(link);
   });
@@ -51,7 +55,6 @@ export const sendPlatform = (win: BrowserWindow) => {
 };
 
 export type Command =
-  | 'printFile'
   | 'openDir'
   | 'newFile'
   | 'find'

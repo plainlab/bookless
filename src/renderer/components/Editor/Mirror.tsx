@@ -1,4 +1,4 @@
-import { countColumn, Editor as CMEditor } from 'codemirror';
+import { countColumn, Editor as CMEditor, EditorChange } from 'codemirror';
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/search/search';
 import 'codemirror/addon/search/searchcursor';
@@ -77,9 +77,30 @@ const onEditorDidMount = (editor: CMEditor) => {
 const Mirror = (props: AppStateProps) => {
   const { state, dispatch } = props;
 
+  const onBeforeChange = (ed: CMEditor, ec: EditorChange, md: string) => {
+    if (ec.origin === 'paste') {
+      const oldText = ec.text[0];
+      window.ipcAPI
+        ?.copyFileToAssets(state.dir, oldText)
+        .then((newText: string) => {
+          if (newText.includes('assets') && newText !== oldText) {
+            const text = `[${oldText}](${newText})`;
+            ed.execCommand('undo');
+            ed.setCursor(ec.from);
+            ed.replaceSelection(text);
+          } else {
+            dispatch({ type: 'updateMd', md });
+          }
+          return null;
+        });
+    } else {
+      dispatch({ type: 'updateMd', md });
+    }
+  };
+
   return (
     <CodeMirror
-      onBeforeChange={(_ed, _diff, md) => dispatch({ type: 'updateMd', md })}
+      onBeforeChange={onBeforeChange}
       editorDidMount={onEditorDidMount}
       value={state.doc.md}
       autoCursor

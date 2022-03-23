@@ -94,12 +94,12 @@ export default class MenuBuilder {
       label: '&File',
       submenu: [
         {
-          label: '&Open',
+          label: '&Open folder...',
           accelerator: 'CmdOrCtrl+O',
           click: () => this.windowSendCommand('openDir'),
         },
         {
-          label: '&New',
+          label: '&New file...',
           accelerator: 'CmdOrCtrl+N',
           click: () => this.windowSendCommand('newFile'),
         },
