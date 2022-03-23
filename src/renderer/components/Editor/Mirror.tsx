@@ -88,6 +88,8 @@ const Mirror = (props: AppStateProps) => {
             ed.execCommand('undo');
             ed.setSelection(ec.to, ec.from);
             ed.replaceSelection(text);
+            ed.refresh();
+            dispatch({ type: 'updateMd', md: ed.getValue() });
           } else {
             dispatch({ type: 'updateMd', md });
           }

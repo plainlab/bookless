@@ -178,7 +178,10 @@ export const openDir = async () => {
 };
 
 export const pasteImageToAssets = async (dir: string, from: string) => {
-  const newFilename = path.join('assets', `${nanoid()}.png`);
+  const newFilename = path.join(
+    'assets',
+    `${nanoid()}.${from.toLowerCase().endsWith('jpg') ? 'jpg' : 'png'}`
+  );
 
   const dest = path.join(dir, newFilename);
   const assetsRoot = path.dirname(dest);
@@ -188,7 +191,11 @@ export const pasteImageToAssets = async (dir: string, from: string) => {
   // Paste image
   const nImg = clipboard.readImage();
   if (nImg && !nImg.isEmpty()) {
-    await writeFile(dest, nImg.toPNG());
+    if (dest.endsWith('jpg')) {
+      await writeFile(dest, nImg.toJPEG(100));
+    } else {
+      await writeFile(dest, nImg.toPNG());
+    }
     return newFilename;
   }
 
