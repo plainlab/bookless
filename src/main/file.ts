@@ -8,20 +8,6 @@ import { Doc, DocFile } from '../renderer/state/AppState';
 
 const mdExtensions = ['md', 'txt', 'markdown'];
 
-const IS_MAC = process.platform === 'darwin';
-const IS_WIN32 = process.platform === 'win32';
-
-function getFilePathFromClipboard() {
-  if (IS_WIN32) {
-    const rawFilePath = clipboard.read('FileNameW');
-    return rawFilePath.replace(new RegExp(String.fromCharCode(0), 'g'), '');
-  }
-  if (IS_MAC) {
-    return clipboard.read('public.file-url').replace('file://', '');
-  }
-  return clipboard.readText();
-}
-
 export const loadFile = async (
   dir: string,
   filename: string
@@ -191,32 +177,19 @@ export const openDir = async () => {
   return { dir, filenames };
 };
 
-export const copyFileToAssets = async (dir: string, from: string) => {
-  const rawExt = path.extname(from);
-  const newFilename = path.join('assets', `${nanoid()}${rawExt}`);
+export const pasteImageToAssets = async (dir: string, from: string) => {
+  const newFilename = path.join('assets', `${nanoid()}.png`);
 
   const dest = path.join(dir, newFilename);
-  const assetsRoot = path.basename(dest);
+  const assetsRoot = path.dirname(dest);
 
   await fs.promises.mkdir(assetsRoot, { recursive: true });
 
   // Paste image
   const nImg = clipboard.readImage();
   if (nImg && !nImg.isEmpty()) {
-    const pngFile = dest.replace(rawExt, '.png');
-    await fs.promises.writeFile(pngFile, nImg.toPNG());
-    return newFilename.replace(rawExt, '.png');
-  }
-
-  // Paste file path
-  const fromClipboard = decodeURIComponent(getFilePathFromClipboard());
-  if (fromClipboard) {
-    try {
-      await fs.promises.copyFile(fromClipboard, dest);
-      return newFilename;
-    } catch (e) {
-      return from;
-    }
+    await writeFile(dest, nImg.toPNG());
+    return newFilename;
   }
 
   return from;

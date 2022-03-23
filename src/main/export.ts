@@ -12,6 +12,9 @@ const exportFormats = [
   { name: 'HTML (html)', extensions: ['html'] },
 ];
 
+const markdownExt =
+  'markdown+header_attributes+footnotes+tex_math_dollars+implicit_figures+link_attributes';
+
 interface ExportOptions {
   dir: string;
   filename?: string;
@@ -35,7 +38,8 @@ const buildOut = (exp: ExportOptions, conf: Meta): Out => {
 
   // Default args
   out.output = exp.outputPath;
-  out.from = 'markdown+header_attributes+footnotes+tex_math_dollars';
+  out.from = markdownExt;
+  out['resource-path'] = exp.dir;
   out.standalone = true;
 
   if (!exp.filename) {
