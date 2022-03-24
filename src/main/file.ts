@@ -8,6 +8,20 @@ import { Doc, DocFile } from '../renderer/state/AppState';
 
 const mdExtensions = ['md', 'txt', 'markdown'];
 
+const IS_MAC = process.platform === 'darwin';
+const IS_WIN32 = process.platform === 'win32';
+
+function getFilePathFromClipboard() {
+  if (IS_WIN32) {
+    const rawFilePath = clipboard.read('FileNameW');
+    return rawFilePath.replace(new RegExp(String.fromCharCode(0), 'g'), '');
+  }
+  if (IS_MAC) {
+    return clipboard.read('public.file-url').replace('file://', '');
+  }
+  return clipboard.readText();
+}
+
 export const loadFile = async (
   dir: string,
   filename: string
@@ -188,13 +202,21 @@ export const pasteImageToAssets = async (dir: string, from: string) => {
 
   await fs.promises.mkdir(assetsRoot, { recursive: true });
 
-  // Paste image
+  // Support copy file
+  const fromPath = from && decodeURIComponent(getFilePathFromClipboard());
+  if (fromPath) {
+    await fs.promises.copyFile(fromPath, dest);
+    return newFilename;
+  }
+
+  // Support copy image
+  // FIXME: Make this work
   const nImg = clipboard.readImage();
   if (nImg && !nImg.isEmpty()) {
     if (dest.endsWith('jpg')) {
-      await writeFile(dest, nImg.toJPEG(100));
+      await fs.promises.writeFile(dest, nImg.toJPEG(100));
     } else {
-      await writeFile(dest, nImg.toPNG());
+      await fs.promises.writeFile(dest, nImg.toPNG());
     }
     return newFilename;
   }
