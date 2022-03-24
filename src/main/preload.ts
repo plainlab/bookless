@@ -13,12 +13,6 @@ export type Message =
       config: Meta;
     };
 
-const chooseFormat = async (fmt: string): Promise<boolean> =>
-  ipcRenderer.invoke('chooseFormat', fmt);
-
-const readDataDirFile = async (fileName: string): Promise<Meta | undefined> =>
-  ipcRenderer.invoke('readDataDirFile', fileName);
-
 const openDir = async (): Promise<{ dir: string; filenames: string[] }> =>
   ipcRenderer.invoke('openDir');
 
@@ -85,8 +79,6 @@ const ipcAPI = {
     sendPlatform: (cb: (p: string) => void) =>
       ipcRenderer.once('sendPlatform', (_e, p) => cb(p)),
   },
-  chooseFormat,
-  readDataDirFile,
 };
 
 contextBridge.exposeInMainWorld('ipcAPI', ipcAPI);
