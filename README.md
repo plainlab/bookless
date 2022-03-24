@@ -5,6 +5,10 @@
 
 > A no-hassle book-writing app that let you write books in plain text files.
 
+## Demo
+
+[WIP] A book written in Bookless: https://bookless.github.io
+
 ## Features
 
 - [x] Write books in local plain text files, you own your content, no vendor lock-in
