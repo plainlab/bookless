@@ -1,22 +1,22 @@
-[![Test](https://github.com/plainlab/bookless/actions/workflows/test.yml/badge.svg)](https://github.com/plainlab/bookless/actions/workflows/test.yml)
-[![Release](https://img.shields.io/github/v/release/plainlab/bookless)](https://github.com/plainlab/bookless/releases)
+[![Test](https://github.com/plainlab/bookless/actions/workflows/test.yml/badge.svg)][6]
+[![Release](https://img.shields.io/github/v/release/plainlab/bookless)][5]
 
 # Bookless
 
-> A no-hassle book-writing app that let you write your books in plain text files.
+> A no-hassle book-writing app that let you write books in plain text files.
 
 ## Features
 
 - [x] Write books in local plain text files, you own your content, no vendor lock-in
-- [x] Support markdown syntax with Pandoc extensions for building books
-- [x] No-distraction writing mode
+- [x] Support Markdown syntax with Pandoc extensions for building books
+- [x] Paste images directly into editor from clipboard
+- [x] Distraction-free writing mode
 - [x] Organize chapters visually with drag & drop
 - [x] Export books to PDF / ePub / HTML (Latex is required for PDF export)
 - [x] Cross-platform: Windows, macOS, Linux
-- [x] Paste images directly into editor
 - [ ] Multilingual spelling check
 - [ ] Beautiful default book template
-- [ ] Markdown preview mode
+- [ ] Preview mode
 
 ## Installation
 
@@ -43,3 +43,4 @@
 [3]: https://www.flaticon.com/authors/mavadee
 [4]: https://www.latex-project.org/get/
 [5]: https://github.com/plainlab/bookless/releases
+[6]: https://github.com/plainlab/bookless/actions/workflows/test.yml
