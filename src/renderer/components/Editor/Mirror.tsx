@@ -77,33 +77,29 @@ const onEditorDidMount = (editor: CMEditor) => {
 const Mirror = (props: AppStateProps) => {
   const { state, dispatch } = props;
 
-  const onBeforeChange = (ed: CMEditor, ec: EditorChange, md: string) => {
-    if (ec.origin === 'paste') {
-      const oldText = ec.text[0] || 'image.png';
-      window.ipcAPI
-        ?.pasteImageToAssets(state.dir, oldText)
-        .then((newText: string) => {
-          if (newText.includes('assets') && newText !== oldText) {
-            const text = `![${oldText}](${newText})`;
-            ed.execCommand('undo');
-            ed.setSelection(ec.to, ec.from);
-            ed.replaceSelection(text);
-            ed.refresh();
-            dispatch({ type: 'updateMd', md: ed.getValue() });
-          } else {
-            dispatch({ type: 'updateMd', md });
-          }
-          return null;
-        });
-    } else {
-      dispatch({ type: 'updateMd', md });
-    }
+  const onPaste = (ed: CMEditor) => {
+    window.ipcAPI?.pasteImageToAssets(state.dir).then((filePath: string) => {
+      if (filePath.includes('assets')) {
+        const text = `![image](${filePath})`;
+        const { anchor, head } = ed.listSelections()[0];
+        ed.setSelection(anchor, head);
+        ed.replaceSelection(text);
+        ed.refresh();
+        dispatch({ type: 'updateMd', md: ed.getValue() });
+      }
+      return null;
+    });
+  };
+
+  const onBeforeChange = (_ed: CMEditor, _ec: EditorChange, md: string) => {
+    dispatch({ type: 'updateMd', md });
   };
 
   return (
     <CodeMirror
       onBeforeChange={onBeforeChange}
       editorDidMount={onEditorDidMount}
+      onPaste={onPaste}
       value={state.doc.md}
       autoCursor
       options={codeMirrorOptions}

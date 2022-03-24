@@ -95,7 +95,14 @@ const Editor = (props: AppStateProps) => {
         <section className="h-8 bg-gradient-to-b from-white to-transparent" />
       </nav>
       <section className="relative flex-1">
-        <Mirror state={state} dispatch={dispatch} />
+        {state.dir ? (
+          <Mirror state={state} dispatch={dispatch} />
+        ) : (
+          <div className="px-10 text-base">
+            Choose a folder to get started by clicking the open icon on the top
+            left!
+          </div>
+        )}
       </section>
     </div>
   );

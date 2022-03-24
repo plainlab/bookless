@@ -191,35 +191,46 @@ export const openDir = async () => {
   return { dir, filenames };
 };
 
-export const pasteImageToAssets = async (dir: string, from: string) => {
-  const newFilename = path.join(
-    'assets',
-    `${nanoid()}.${from.toLowerCase().endsWith('jpg') ? 'jpg' : 'png'}`
-  );
+export const pasteImageToAssets = async (dir: string) => {
+  const containsImage = clipboard
+    .availableFormats()
+    .some((p) => p.includes('image'));
 
-  const dest = path.join(dir, newFilename);
+  const containsPng = clipboard
+    .availableFormats()
+    .some((p) => p.includes('image/png'));
+
+  const fromPath = decodeURIComponent(getFilePathFromClipboard());
+
+  const fn = containsImage
+    ? `${nanoid()}.${containsPng ? 'png' : 'jpg'}`
+    : `${nanoid()}.${fromPath.endsWith('png') ? 'png' : 'jpg'}`;
+
+  const newFilePath = path.join('assets', fn);
+
+  const dest = path.join(dir, newFilePath);
   const assetsRoot = path.dirname(dest);
-
   await fs.promises.mkdir(assetsRoot, { recursive: true });
 
-  // Support copy file
-  const fromPath = from && decodeURIComponent(getFilePathFromClipboard());
-  if (fromPath) {
-    await fs.promises.copyFile(fromPath, dest);
-    return newFilename;
+  // Support copy image from path
+  if (!containsImage) {
+    if (fromPath) {
+      await fs.promises.copyFile(fromPath, dest);
+      return newFilePath;
+    }
+    return '';
   }
 
-  // Support copy image
-  // FIXME: Make this work
+  // Support copy image on clipboard
   const nImg = clipboard.readImage();
   if (nImg && !nImg.isEmpty()) {
-    if (dest.endsWith('jpg')) {
-      await fs.promises.writeFile(dest, nImg.toJPEG(100));
-    } else {
+    if (dest.endsWith('png')) {
       await fs.promises.writeFile(dest, nImg.toPNG());
+    } else {
+      await fs.promises.writeFile(dest, nImg.toJPEG(100));
     }
-    return newFilename;
+    return newFilePath;
   }
 
-  return from;
+  return '';
 };
