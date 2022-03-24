@@ -13,12 +13,6 @@ export type Message =
       config: Meta;
     };
 
-const chooseFormat = async (fmt: string): Promise<boolean> =>
-  ipcRenderer.invoke('chooseFormat', fmt);
-
-const readDataDirFile = async (fileName: string): Promise<Meta | undefined> =>
-  ipcRenderer.invoke('readDataDirFile', fileName);
-
 const openDir = async (): Promise<{ dir: string; filenames: string[] }> =>
   ipcRenderer.invoke('openDir');
 
@@ -51,8 +45,8 @@ const exportBook = async (dir: string) => ipcRenderer.invoke('exportBook', dir);
 const exportChapter = async (dir: string, filename: string) =>
   ipcRenderer.invoke('exportChapter', dir, filename);
 
-const pasteImageToAssets = async (dir: string, from: string) =>
-  ipcRenderer.invoke('pasteImageToAssets', dir, from);
+const pasteImageToAssets = async (dir: string) =>
+  ipcRenderer.invoke('pasteImageToAssets', dir);
 
 const ipcAPI = {
   openDir,
@@ -85,8 +79,6 @@ const ipcAPI = {
     sendPlatform: (cb: (p: string) => void) =>
       ipcRenderer.once('sendPlatform', (_e, p) => cb(p)),
   },
-  chooseFormat,
-  readDataDirFile,
 };
 
 contextBridge.exposeInMainWorld('ipcAPI', ipcAPI);

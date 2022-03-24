@@ -1,12 +1,12 @@
 {
   "name": "bookless",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Plain book-writing app",
   "main": "./dist/main/main.js",
   "author": {
     "name": "PlainLab",
     "email": "plain@manhtai.com",
-    "url": "https://github.com/plainlab"
+    "url": "https://github.com/plainlab/bookless"
   },
   "scripts": {
     "electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",

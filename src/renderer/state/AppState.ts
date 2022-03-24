@@ -53,7 +53,7 @@ export const initialState: AppState = {
   dir: '',
   files: [],
   doc: {
-    md: 'Choose a **folder** to get started by clicking the open icon on the top left!',
+    md: '',
     yaml: '',
     bodyMd: '',
     meta: {},
