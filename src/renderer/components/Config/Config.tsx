@@ -68,23 +68,6 @@ const metaKvs: Kv[] = [
     type: 'string',
     placeholder: 'en',
   },
-  {
-    name: ConfigKey.font,
-    label: 'Font',
-    type: 'string',
-  },
-  {
-    name: ConfigKey.fontSize,
-    label: 'Font size',
-    type: 'number',
-    step: 1,
-  },
-  {
-    name: ConfigKey.lineHeight,
-    label: 'Line height',
-    type: 'number',
-    step: 1,
-  },
 ];
 
 const layoutKvs: Kv[] = [

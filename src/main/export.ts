@@ -41,6 +41,7 @@ const buildOut = (exp: ExportOptions, conf: Meta): Out => {
   out.from = markdownExt;
   out['resource-path'] = exp.dir;
   out.standalone = true;
+  out.katex = true;
 
   if (!exp.filename) {
     out.toc = true;
