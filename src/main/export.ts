@@ -137,7 +137,7 @@ ${err.message}`,
         const success = exitCode === 0;
         if (!receivedError) {
           if (success) {
-            const message = `Created file: ${exp.outputPath}`;
+            const message = `Exported file: ${exp.outputPath}`;
             resolve(message);
           } else {
             const error = [`Called: ${cmdDebug}`, '']
