@@ -3,11 +3,11 @@
 
 # Bookless
 
-> A no-hassle book-writing app that let you write books in plain text files.
+> A hassle-free book-writing app that let you author books in plain text.
 
 ## Demo
 
-[WIP] A book written in Bookless: https://bookless.github.io
+A manual written in Bookless (WIP): https://bookless.github.io
 
 ## Features
 
@@ -16,7 +16,7 @@
 - [x] Paste images directly into editor from clipboard
 - [x] Distraction-free writing mode
 - [x] Organize chapters visually with drag & drop
-- [x] Export books to PDF / ePub / HTML (Latex is required for PDF export)
+- [x] Export books to PDF / ePub / HTML
 - [x] Cross-platform: Windows, macOS, Linux
 - [ ] Multilingual spelling check
 - [ ] Beautiful default book template

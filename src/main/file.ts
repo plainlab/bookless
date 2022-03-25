@@ -191,46 +191,43 @@ export const openDir = async () => {
   return { dir, filenames };
 };
 
-export const pasteImageToAssets = async (dir: string) => {
-  const containsImage = clipboard
-    .availableFormats()
-    .some((p) => p.includes('image'));
-
-  const containsPng = clipboard
-    .availableFormats()
-    .some((p) => p.includes('image/png'));
-
+export const pasteImageToAssets = async (dir: string): Promise<string[]> => {
+  // Detect image on clipboard (image file path or real image)
   const fromPath = decodeURIComponent(getFilePathFromClipboard());
+  const containsImage =
+    clipboard.availableFormats().some((p) => p.includes('image')) ||
+    fromPath.toLowerCase().endsWith('.png') ||
+    fromPath.toLowerCase().endsWith('.jpeg') ||
+    fromPath.toLowerCase().endsWith('.jpg');
 
-  const fn = containsImage
-    ? `${nanoid()}.${containsPng ? 'png' : 'jpg'}`
-    : `${nanoid()}.${fromPath.endsWith('png') ? 'png' : 'jpg'}`;
+  if (containsImage) {
+    const containsPng =
+      clipboard.availableFormats().some((p) => p.includes('image/png')) ||
+      fromPath.toLowerCase().endsWith('.png');
 
-  const newFilePath = path.join('assets', fn);
+    const filename = `${nanoid()}.${containsPng ? 'png' : 'jpg'}`;
+    const filePath = path.join('assets', filename);
+    const dest = path.join(dir, filePath);
+    const assetsRoot = path.dirname(dest);
+    await fs.promises.mkdir(assetsRoot, { recursive: true });
 
-  const dest = path.join(dir, newFilePath);
-  const assetsRoot = path.dirname(dest);
-  await fs.promises.mkdir(assetsRoot, { recursive: true });
-
-  // Support copy image from path
-  if (!containsImage) {
+    // Support copy image from path
     if (fromPath) {
       await fs.promises.copyFile(fromPath, dest);
-      return newFilePath;
+      return [filename, filePath];
     }
-    return '';
+
+    // Support copy image on clipboard
+    const nImg = clipboard.readImage();
+    if (nImg && !nImg.isEmpty()) {
+      if (containsPng) {
+        await fs.promises.writeFile(dest, nImg.toPNG());
+      } else {
+        await fs.promises.writeFile(dest, nImg.toJPEG(100));
+      }
+      return [filename, filePath];
+    }
   }
 
-  // Support copy image on clipboard
-  const nImg = clipboard.readImage();
-  if (nImg && !nImg.isEmpty()) {
-    if (dest.endsWith('png')) {
-      await fs.promises.writeFile(dest, nImg.toPNG());
-    } else {
-      await fs.promises.writeFile(dest, nImg.toJPEG(100));
-    }
-    return newFilePath;
-  }
-
-  return '';
+  return [fromPath || clipboard.readText(), ''];
 };
