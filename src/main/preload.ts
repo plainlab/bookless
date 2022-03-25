@@ -45,7 +45,7 @@ const exportBook = async (dir: string) => ipcRenderer.invoke('exportBook', dir);
 const exportChapter = async (dir: string, filename: string) =>
   ipcRenderer.invoke('exportChapter', dir, filename);
 
-const pasteImageToAssets = async (dir: string) =>
+const pasteImageToAssets = async (dir: string): Promise<string[]> =>
   ipcRenderer.invoke('pasteImageToAssets', dir);
 
 const ipcAPI = {

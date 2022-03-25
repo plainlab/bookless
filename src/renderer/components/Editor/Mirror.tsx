@@ -78,17 +78,24 @@ const Mirror = (props: AppStateProps) => {
   const { state, dispatch } = props;
 
   const onPaste = (ed: CMEditor) => {
-    window.ipcAPI?.pasteImageToAssets(state.dir).then((filePath: string) => {
-      if (filePath.includes('assets')) {
-        const text = `![image](${filePath})`;
+    window.ipcAPI
+      ?.pasteImageToAssets(state.dir)
+      .then(([filename, filePath]) => {
+        let text = filename;
+        if (filePath !== '') {
+          text = `![Image caption](${filePath})`;
+        }
+        if (filename !== '') {
+          ed.execCommand('undo');
+        }
+
         const { anchor, head } = ed.listSelections()[0];
         ed.setSelection(anchor, head);
         ed.replaceSelection(text);
         ed.refresh();
         dispatch({ type: 'updateMd', md: ed.getValue() });
-      }
-      return null;
-    });
+        return null;
+      });
   };
 
   const onBeforeChange = (_ed: CMEditor, _ec: EditorChange, md: string) => {
