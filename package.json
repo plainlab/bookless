@@ -164,6 +164,7 @@
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.4",
     "@tailwindcss/forms": "^0.5.0",
+    "@tailwindcss/typography": "^0.5.2",
     "@teamsupercell/typings-for-css-modules-loader": "^2.5.1",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
@@ -262,7 +263,6 @@
     "markdown-it-task-lists": "^2.1.1",
     "markdown-it-texmath": "^0.9.7",
     "nanoid": "^3.3.1",
-    "pagedjs": "^0.2.0",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",
     "react-codemirror2": "^7.2.1",
