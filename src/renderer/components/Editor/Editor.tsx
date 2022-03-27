@@ -52,7 +52,7 @@ const Editor = (props: AppStateProps) => {
   });
 
   return (
-    <div className="relative flex flex-col flex-1 ">
+    <div className="relative flex flex-col flex-1">
       <nav
         className={classNames({
           'absolute w-full z-30 flex flex-col duration-300 transition-opacity text-gray-500':
@@ -85,6 +85,7 @@ const Editor = (props: AppStateProps) => {
           <section className="z-0 flex items-center justify-center space-x-4">
             {preview ? (
               <IoCodeOutline
+                title="Edit chapter"
                 className={classNames({
                   'w-5 h-5 opacity-70': true,
                   'cursor-pointer hover:opacity-100': state.doc.filePath,
@@ -94,6 +95,7 @@ const Editor = (props: AppStateProps) => {
               />
             ) : (
               <IoEyeOutline
+                title="Preview chapter"
                 className={classNames({
                   'w-5 h-5 opacity-70': true,
                   'cursor-pointer hover:opacity-100': state.doc.filePath,
@@ -103,6 +105,7 @@ const Editor = (props: AppStateProps) => {
               />
             )}
             <IoShareOutline
+              title="Export chapter"
               className={classNames({
                 'w-5 h-5 opacity-70': true,
                 'cursor-pointer hover:opacity-100': state.doc.filePath,

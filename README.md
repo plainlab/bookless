@@ -19,8 +19,7 @@ A manual written in Bookless (WIP): https://bookless.github.io
 - [x] Export books to PDF / ePub / HTML
 - [x] Cross-platform: Windows, macOS, Linux
 - [ ] Multilingual spelling check
-- [ ] Beautiful default book template
-- [ ] Preview mode
+- [ ] Beautiful book template
 
 ## Installation
 

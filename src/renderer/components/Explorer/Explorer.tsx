@@ -179,7 +179,7 @@ const Explorer = (props: AppStateProps) => {
         'w-0': !state.explorer,
       })}
     >
-      <nav className="absolute z-10 flex flex-col w-full text-gray-500">
+      <nav className="sticky top-0 z-10 flex flex-col text-gray-500">
         <section className="flex items-center justify-between flex-1 p-4 bg-gray-200">
           <section className="flex items-center justify-center space-x-4">
             <IoFolderOpenOutline
@@ -199,6 +199,7 @@ const Explorer = (props: AppStateProps) => {
           </section>
           <section>
             <IoShareOutline
+              title="Export book"
               className={classNames({
                 'w-5 h-5 opacity-70': true,
                 'cursor-pointer hover:opacity-100':
@@ -220,7 +221,7 @@ const Explorer = (props: AppStateProps) => {
               {...provided.droppableProps}
               ref={provided.innerRef}
               className={classNames({
-                'flex-1 p-2 space-y-2 relative pt-16': true,
+                'flex-1 p-2 space-y-2 relative': true,
                 'opacity-50': snapshot.isDraggingOver,
               })}
             >
