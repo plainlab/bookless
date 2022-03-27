@@ -80,7 +80,7 @@ const convertMd = (doc: Doc): string => {
         !src.includes('https://') &&
         doc.filePath
       ) {
-        srcTuple[1] = `file://${dirname(doc.filePath)}/${src}`;
+        srcTuple[1] = `file://${dirname(doc.filePath)}${src}`;
       }
       return defaultImageRender(tokens, idx, options, env, self);
     };
@@ -90,4 +90,5 @@ const convertMd = (doc: Doc): string => {
     .use(mdItSourceMapPlugin(1 + getNrOfYamlLines(doc.yaml)))
     .render(doc.bodyMd);
 };
+
 export default convertMd;

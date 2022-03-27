@@ -174,13 +174,13 @@ const Explorer = (props: AppStateProps) => {
   return (
     <div
       className={classNames({
-        'flex flex-col w-64 transition-all duration-300 overflow-x-hidden overflow-y-auto bg-local bg-gradient-to-t from-white to-gray-100':
+        'flex flex-col w-64 transition-all duration-300 overflow-x-hidden overflow-y-auto bg-local bg-gradient-to-t from-gray-100 to-gray-200':
           true,
         'w-0': !state.explorer,
       })}
     >
       <nav className="sticky top-0 z-10 flex flex-col text-gray-500">
-        <section className="flex items-center justify-between flex-1 px-4 pt-4 bg-gray-100">
+        <section className="flex items-center justify-between flex-1 p-4 bg-gray-200">
           <section className="flex items-center justify-center space-x-4">
             <IoFolderOpenOutline
               title="Open book folder"
@@ -199,6 +199,7 @@ const Explorer = (props: AppStateProps) => {
           </section>
           <section>
             <IoShareOutline
+              title="Export book"
               className={classNames({
                 'w-5 h-5 opacity-70': true,
                 'cursor-pointer hover:opacity-100':
@@ -211,7 +212,7 @@ const Explorer = (props: AppStateProps) => {
             />
           </section>
         </section>
-        <section className="h-8 bg-gradient-to-b from-gray-100 to-transparent" />
+        <section className="h-4 bg-gradient-to-b from-gray-200 to-transparent" />
       </nav>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="explorer">
@@ -240,8 +241,13 @@ const Explorer = (props: AppStateProps) => {
                         {...provided_.draggableProps}
                         {...provided_.dragHandleProps}
                         className={classNames({
-                          'border rounded': true,
-                          'bg-blue-300 border-none': snapshot_.isDragging,
+                          'rounded border hover:shadow-lg transition-all cursor-pointer':
+                            true,
+                          'bg-blue-300 border-blue-400': snapshot_.isDragging,
+                          'text-white bg-blue-500 border-none':
+                            file.name === state.doc.fileName,
+                          'border-gray-300 hover:opacity-70':
+                            file.name !== state.doc.fileName,
                         })}
                       >
                         <div
@@ -251,14 +257,7 @@ const Explorer = (props: AppStateProps) => {
                           onClick={() => chooseFile(state.dir, file.name)}
                           onDoubleClick={() => renameFile(state.dir, file.name)}
                           onKeyPress={() => chooseFile(state.dir, file.name)}
-                          className={classNames({
-                            'h-28 w-60 p-4 flex flex-col justify-between duration-300 transition-all items-stretch rounded text-xs cursor-pointer':
-                              true,
-                            'text-white bg-blue-500':
-                              file.name === state.doc.fileName,
-                            'hover:bg-gray-200':
-                              file.name !== state.doc.fileName,
-                          })}
+                          className="flex flex-col items-stretch justify-between p-4 text-xs h-28 w-60"
                         >
                           <section className="space-y-1">
                             <h1 className="font-semibold">{file.name}</h1>

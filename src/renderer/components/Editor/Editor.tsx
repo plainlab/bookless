@@ -1,16 +1,21 @@
+/* eslint-disable no-nested-ternary */
 import classNames from 'classnames';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   IoAddOutline,
   IoBookmarkOutline,
+  IoCodeOutline,
+  IoEyeOutline,
   IoShareOutline,
 } from 'react-icons/io5';
 import { ConfigKey } from 'renderer/state/AppState';
 import { AppStateProps } from 'renderer/state/reducer';
 import Mirror from './Mirror';
+import Preview from './Preview';
 
 const Editor = (props: AppStateProps) => {
   const { state, dispatch } = props;
+  const [preview, setPreview] = useState(false);
 
   const newFile = async () => {
     if (!state.dir) {
@@ -47,10 +52,10 @@ const Editor = (props: AppStateProps) => {
   });
 
   return (
-    <div className="relative flex flex-col flex-1 overflow-auto">
+    <div className="relative flex flex-col flex-1">
       <nav
         className={classNames({
-          'sticky top-0 z-10 flex flex-col duration-300 transition-opacity text-gray-500':
+          'absolute w-full z-30 flex flex-col duration-300 transition-opacity text-gray-500':
             true,
           'opacity-0 hover:opacity-100': !state.explorer,
         })}
@@ -78,7 +83,29 @@ const Editor = (props: AppStateProps) => {
             />
           </section>
           <section className="z-0 flex items-center justify-center space-x-4">
+            {preview ? (
+              <IoCodeOutline
+                title="Edit chapter"
+                className={classNames({
+                  'w-5 h-5 opacity-70': true,
+                  'cursor-pointer hover:opacity-100': state.doc.filePath,
+                  'cursor-not-allowed opacity-10': !state.doc.filePath,
+                })}
+                onClick={() => setPreview(false)}
+              />
+            ) : (
+              <IoEyeOutline
+                title="Preview chapter"
+                className={classNames({
+                  'w-5 h-5 opacity-70': true,
+                  'cursor-pointer hover:opacity-100': state.doc.filePath,
+                  'cursor-not-allowed opacity-10': !state.doc.filePath,
+                })}
+                onClick={() => setPreview(true)}
+              />
+            )}
             <IoShareOutline
+              title="Export chapter"
               className={classNames({
                 'w-5 h-5 opacity-70': true,
                 'cursor-pointer hover:opacity-100': state.doc.filePath,
@@ -92,13 +119,17 @@ const Editor = (props: AppStateProps) => {
             />
           </section>
         </section>
-        <section className="h-8 bg-gradient-to-b from-white to-transparent" />
+        <section className="h-4 bg-gradient-to-b from-white to-transparent" />
       </nav>
-      <section className="relative flex-1">
+      <section className="relative z-20 flex-1 bg-white">
         {state.dir ? (
-          <Mirror state={state} dispatch={dispatch} />
+          preview ? (
+            <Preview state={state} dispatch={dispatch} />
+          ) : (
+            <Mirror state={state} dispatch={dispatch} />
+          )
         ) : (
-          <div className="px-10 text-base">
+          <div className="px-10 mt-16 text-base">
             Choose a folder to get started by clicking the open icon on the top
             left!
           </div>
