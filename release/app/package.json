@@ -1,6 +1,6 @@
 {
   "name": "bookless",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Hassle-free book-writing app",
   "main": "./dist/main/main.js",
   "author": {
