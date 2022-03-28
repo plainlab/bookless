@@ -30,7 +30,7 @@ const Preview = (props: AppStateProps) => {
       role="presentation"
     >
       <div
-        className="relative prose"
+        className="relative max-w-2xl mx-auto prose"
         dangerouslySetInnerHTML={{ __html: convertMd(state.doc) }}
       />
     </main>
