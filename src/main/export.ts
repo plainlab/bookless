@@ -13,7 +13,7 @@ const exportFormats = [
 ];
 
 const markdownExt =
-  'markdown+header_attributes+footnotes+tex_math_dollars+implicit_figures+link_attributes';
+  'markdown+header_attributes+footnotes+tex_math_dollars+implicit_figures+link_attributes+grid_tables';
 
 interface ExportOptions {
   dir: string;
