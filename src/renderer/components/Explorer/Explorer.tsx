@@ -257,29 +257,35 @@ const Explorer = (props: AppStateProps) => {
                           onClick={() => chooseFile(state.dir, file.name)}
                           onDoubleClick={() => renameFile(state.dir, file.name)}
                           onKeyPress={() => chooseFile(state.dir, file.name)}
-                          className="flex flex-col items-stretch justify-between p-4 text-xs h-28 w-60"
+                          className="flex flex-col items-stretch justify-between h-32 p-4 text-xs w-60"
                         >
                           <section className="space-y-1">
                             <h1 className="font-semibold">{file.name}</h1>
                             <p>{file.body}</p>
                           </section>
-                          <span className="flex items-center justify-start mt-2 space-x-2 transition-opacity duration-300 opacity-0 hover:opacity-100">
-                            <IoTrashOutline
-                              className="w-4 h-4 transition-opacity duration-300 hover:opacity-70"
-                              title="Delete"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteFile(state.dir, file.name);
-                              }}
-                            />
-                            <IoCreateOutline
-                              className="w-4 h-4 transition-opacity duration-300 hover:opacity-70"
-                              title="Rename"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                renameFile(state.dir, file.name);
-                              }}
-                            />
+                          <span className="flex items-center justify-between opacity-70">
+                            <span>
+                              {file.count} word
+                              {file.count === '1' ? '' : 's'}
+                            </span>
+                            <span className="flex items-center justify-end flex-1 space-x-2 transition-opacity duration-300 opacity-0 hover:opacity-100">
+                              <IoTrashOutline
+                                className="w-4 h-4 transition-opacity duration-300 hover:opacity-70"
+                                title="Delete"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteFile(state.dir, file.name);
+                                }}
+                              />
+                              <IoCreateOutline
+                                className="w-4 h-4 transition-opacity duration-300 hover:opacity-70"
+                                title="Rename"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  renameFile(state.dir, file.name);
+                                }}
+                              />
+                            </span>
                           </span>
                         </div>
                       </div>

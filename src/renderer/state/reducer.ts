@@ -1,4 +1,4 @@
-import { truncate } from 'helpers/string';
+import { truncate, words } from 'helpers/string';
 import { Dispatch } from 'react';
 import { AppState } from './AppState';
 import { Action } from './Action';
@@ -38,7 +38,11 @@ const appStateReducer = (state: AppState, action: Action): AppState => {
       };
       const files = state.files.map((file) => {
         if (file.name === doc.fileName) {
-          return { ...file, body: truncate(doc.md) };
+          return {
+            ...file,
+            body: truncate(doc.md),
+            count: words(doc.md),
+          };
         }
         return file;
       });
