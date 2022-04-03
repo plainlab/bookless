@@ -12,6 +12,6 @@ export const truncate = (str: string, num = 60) => {
   return str;
 };
 
-export const words = (str: string) => {
-  return str ? numformatter.format(str.split(' ').length) : 0;
+export const words = (str: string): string => {
+  return str ? numformatter.format(str.split(' ').length) : '0';
 };

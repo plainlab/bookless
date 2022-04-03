@@ -55,7 +55,7 @@ export const loadFiles = async (
           count: words(content),
         };
       } catch (err) {
-        return { name: '', body: '' };
+        return { name: '', body: '', count: '' };
       }
     })
   );
