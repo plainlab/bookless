@@ -7,7 +7,11 @@
 
 ## Demo
 
-A manual written in Bookless (WIP): https://bookless.github.io
+A manual written in Bookless:
+
+- HTML: https://bookless.github.io
+- PDF: https://bookless.github.io/book.pdf
+- EPUB: https://bookless.github.io/book.epub
 
 ## Features
 
