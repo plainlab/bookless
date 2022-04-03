@@ -7,13 +7,13 @@ import { JSON, Meta } from '../renderer/state/AppState';
 import { bookless2pandoc, loadConfig } from './config';
 
 const exportFormats = [
-  { name: 'PDF (pdf)', extensions: ['pdf'] },
-  { name: 'EPUB (epub)', extensions: ['epub'] },
-  { name: 'HTML (html)', extensions: ['html'] },
+  { name: 'PDF', extensions: ['pdf'] },
+  { name: 'EPUB', extensions: ['epub'] },
+  { name: 'HTML', extensions: ['html'] },
 ];
 
 const markdownExt =
-  'markdown+header_attributes+footnotes+tex_math_dollars+implicit_figures+link_attributes+grid_tables';
+  'markdown+header_attributes+footnotes+tex_math_dollars+implicit_figures+link_attributes+grid_tables+yaml_metadata_block';
 
 interface ExportOptions {
   dir: string;
@@ -39,6 +39,7 @@ const buildOut = (exp: ExportOptions, conf: Meta): Out => {
   // Default args
   out.output = exp.outputPath;
   out.from = markdownExt;
+  out['data-dir'] = exp.dir;
   out['resource-path'] = exp.dir;
   out.standalone = true;
   out.katex = true;

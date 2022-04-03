@@ -72,19 +72,14 @@ const metaKvs: Kv[] = [
 
 const layoutKvs: Kv[] = [
   {
-    name: ConfigKey.font,
-    label: 'Font',
-    type: 'select',
-    options: [
-      '',
-      'Georgia, serif',
-      'Helvetica, Arial, sans-serif',
-      'Palatino, Palatino Linotype, serif',
-    ],
+    name: ConfigKey.fontFamily,
+    label: 'Font family',
+    type: 'string',
+    placeholder: 'mathpazo',
   },
   {
     name: ConfigKey.fontSize,
-    label: 'Font size',
+    label: 'Font size (px)',
     type: 'number',
     step: 1,
     onLoad: (s) => (s ? parseInt(s, 10).toString() : ''),
