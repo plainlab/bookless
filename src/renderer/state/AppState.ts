@@ -33,7 +33,7 @@ export const ConfigKey = {
   author: 'variables.author',
   date: 'variables.date',
   lang: 'variables.lang',
-  font: 'variables.mainfont',
+  fontFamily: 'variables.fontfamily',
   fontSize: 'variables.fontsize',
   lineHeight: 'variables.linestretch',
   headerIncludes: 'variables.headerIncludes',
