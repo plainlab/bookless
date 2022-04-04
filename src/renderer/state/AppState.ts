@@ -22,6 +22,7 @@ export interface Doc {
 export interface DocFile {
   name: string;
   body: string;
+  count: string;
 }
 
 export const ConfigKey = {

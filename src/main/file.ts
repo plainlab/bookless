@@ -3,7 +3,7 @@ import { readFile, rename, unlink, writeFile } from 'fs/promises';
 import path from 'path';
 import { clipboard, dialog } from 'electron';
 import { nanoid } from 'nanoid';
-import { truncate, pathToName } from '../helpers/string';
+import { words, truncate, pathToName } from '../helpers/string';
 import { Doc, DocFile } from '../renderer/state/AppState';
 
 const mdExtensions = ['md', 'txt', 'markdown'];
@@ -48,12 +48,14 @@ export const loadFiles = async (
   const docFiles = await Promise.all(
     filenames.map(async (name) => {
       try {
+        const content = await readFile(path.join(dir, name), 'utf-8');
         return {
           name,
-          body: truncate(await readFile(path.join(dir, name), 'utf-8')),
+          body: truncate(content),
+          count: words(content),
         };
       } catch (err) {
-        return { name: '', body: '' };
+        return { name: '', body: '', count: '' };
       }
     })
   );
